@@ -7,4 +7,4 @@ service = ProxyService()
 
 @router.post("/")
 async def proxy_endpoint(request: ProxyRequest):
-    return await service.forward_request(request.url)
+    return await service.forward_request(str(request.url))
