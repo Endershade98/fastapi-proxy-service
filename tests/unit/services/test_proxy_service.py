@@ -3,6 +3,8 @@ from app.services.proxy_service import ProxyService
 
 class TestProxyService:
 
+    url = "https://fake-url.com"
+
     @pytest.mark.asyncio
     async def test_proxy_service_basic(self, mocker):
         service = ProxyService()
@@ -18,7 +20,7 @@ class TestProxyService:
 
         mocker.patch("app.services.proxy_service.fetch", return_value=mock_response)
 
-        result = await service.forward_request("https://fake-url.com")
+        result = await service.forward_request(self.url)
 
         assert result["status_code"] == 200
         assert result["data"]["test"] == "ok"
