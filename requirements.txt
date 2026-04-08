@@ -5,3 +5,7 @@ pydantic
 redis
 aioredis
 python-dotenv
+pytest
+pytest-asyncio
+pytest-cov
+pytest-mock
