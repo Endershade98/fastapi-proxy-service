@@ -1,11 +1,23 @@
 {
-  "name": "FastAPI Debug",
-  "type": "python",
-  "request": "launch",
-  "program": "${workspaceFolder}/app/main.py",
-  "args": ["--reload", "--host", "0.0.0.0", "--port", "8000"],
-"console": "integratedTerminal",
-"configurations": [
-
-]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI Debug",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/.venv/bin/uvicorn",
+      "args": [
+        "app.main:app",          // path al tuo FastAPI app oggetto
+        "--reload",
+        "--host", "0.0.0.0",
+        "--port", "8001"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}",  // root del progetto
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}" // permette di trovare il modulo 'app'
+      }
+    }
+  ]
 }

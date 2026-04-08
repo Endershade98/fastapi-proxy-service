@@ -7,7 +7,10 @@ from app.domain.value_objects.cache_entry import CacheEntry
 
 class RedisClient:
     def __init__(self):
-        self.redis = redis.from_url(settings.REDIS_URL)
+        self.redis_port = settings.REDIS_PORT
+        self.redis_host = settings.REDIS_HOST
+        self.redis_url = f"redis://{self.redis_host}:{self.redis_port}"
+        self.redis = redis.from_url(self.redis_url)
 
     async def get(self, key: str) -> CacheEntry | None:
         raw_value = await self.redis.get(key)

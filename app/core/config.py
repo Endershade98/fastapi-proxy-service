@@ -1,6 +1,8 @@
+import os 
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_PORT: int = os.getenv("REDIS_PORT", 6379)
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
 
 settings = Settings()
