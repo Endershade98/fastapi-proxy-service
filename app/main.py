@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from app.api.router import api_router
-from app.middleware.rate_limiter import RateLimiterMiddleware
+from app.interfaces.api.router import api_router
+from app.interfaces.middleware.rate_limiter import RateLimiterMiddleware
 
 app = FastAPI(title="Proxy Server")
 
-# Aggiunto il middleware per il rate limiting
+# Middleware
 app.add_middleware(RateLimiterMiddleware)
 
+# Include routers
 app.include_router(api_router)
