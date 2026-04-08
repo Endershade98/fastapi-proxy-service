@@ -1,9 +1,12 @@
 from app.infrastructure.celery.celery_app import celery_app
-from app.cache.cache_service import CacheService
+from app.infrastructure.cache.cache_service import RedisCacheService
+from app.domain.value_objects.cache_entry import CacheEntry
 
-cache_service = CacheService()
+
+cache_service = RedisCacheService()
 
 @celery_app.task
 def async_save_cache(key: str, value: dict, ttl: int = 60):
     import asyncio
-    asyncio.run(cache_service.set(key, value, ttl))
+    entry = CacheEntry(key, value, ttl)
+    asyncio.run(cache_service.set(entry))

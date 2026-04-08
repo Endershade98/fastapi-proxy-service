@@ -1,10 +1,8 @@
-# app/cache/cache_service.py
+# app/infrastructure/cache/cache_service.py
 import json
+import logging
 from typing import Optional, Any
-from app.infrastructure.cache.redis_client import redis_client
-from app.infrastructure.logging.logger import get_logger
-
-logger = get_logger(__name__)
+from app.infrastructure.cache.redis_client import redis_client  # istanza già creata
 
 class CacheService:
     """
@@ -12,28 +10,24 @@ class CacheService:
     TTL configurabile e serializzazione sicura.
     """
 
+    def __init__(self, client=None):
+        self.client = client or redis_client
+
     async def get(self, key: str) -> Optional[Any]:
-        """
-        Recupera un valore dalla cache.
-        Logga HIT o MISS.
-        """
         try:
-            value = await redis_client.get(key)
+            value = await self.client.get(key)
             if value:
-                logger.info(f"[Cache HIT] key={key}")
+                logging.info(f"[Cache HIT] key={key}")
                 return json.loads(value)
-            logger.info(f"[Cache MISS] key={key}")
+            logging.info(f"[Cache MISS] key={key}")
             return None
         except Exception as e:
-            logger.error(f"[Cache ERROR] Failed to get key={key}: {e}")
+            logging.error(f"[Cache ERROR] Failed to get key={key}: {e}")
             return None
 
     async def set(self, key: str, value: Any, ttl: int = 60):
-        """
-        Inserisce un valore nella cache con TTL.
-        """
         try:
-            await redis_client.set(key, json.dumps(value), ex=ttl)
-            logger.info(f"[Cache SET] key={key}, ttl={ttl}s")
+            await self.client.set(key, json.dumps(value), ex=ttl)
+            logging.info(f"[Cache SET] key={key}, ttl={ttl}s")
         except Exception as e:
-            logger.error(f"[Cache ERROR] Failed to set key={key}: {e}")
+            logging.error(f"[Cache ERROR] Failed to set key={key}: {e}")
