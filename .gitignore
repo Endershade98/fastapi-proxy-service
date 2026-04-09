@@ -207,4 +207,8 @@ marimo/_lsp/
 __marimo__/
 
 .vscode
+<<<<<<< HEAD
 *.rdb
+=======
+.rdb
+>>>>>>> a08602c (update gitignore)
