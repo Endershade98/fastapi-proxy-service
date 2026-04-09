@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.interfaces.api.router import api_router
 from app.interfaces.middleware.rate_limiter import RateLimiterMiddleware
-from infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
+from app.infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
 from app.infrastructure.cache.redis_client import RedisClient
 
 app = FastAPI()

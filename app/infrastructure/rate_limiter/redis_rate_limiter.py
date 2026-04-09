@@ -1,4 +1,4 @@
-# infrastructure/rate_limiter/redis_rate_limiter.py
+# app/infrastructure/rate_limiter/redis_rate_limiter.py
 from app.domain.services.rate_limiter_interface import RateLimiterInterface
 
 
