@@ -45,3 +45,6 @@ class RedisClient:
 
     async def expire(self, key: str, seconds: int):
         await self.redis.expire(key, seconds)
+    
+# instance
+redis_client = RedisClient()
