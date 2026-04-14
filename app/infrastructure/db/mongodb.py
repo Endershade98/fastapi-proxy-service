@@ -4,13 +4,18 @@ from app.core.config import settings
 
 
 class MongoDB:
-
-    def __init__(self):
-        self.client = AsyncIOMotorClient(settings.MONGO_URI)
-        self.db = self.client[settings.MONGO_DATABASE_NAME]
+    def __init__(self, client: AsyncIOMotorClient, db_name: str):
+        self.client = client
+        self.db = self.client[db_name]
 
     def get_collection(self, name: str):
         return self.db[name]
 
 
-mongo = MongoDB()
+def build_mongo_client() -> AsyncIOMotorClient:
+    return AsyncIOMotorClient(settings.MONGO_URI)
+
+
+def get_mongo() -> MongoDB:
+    client = build_mongo_client()
+    return MongoDB(client=client, db_name=settings.MONGO_DATABASE_NAME)

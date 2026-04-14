@@ -1,37 +1,28 @@
 # app/interfaces/api/routes/proxy.py
-from fastapi import APIRouter, HTTPException
-from app.application.proxy.use_cases.cache_management import CacheManager
-from app.infrastructure.cache.redis_client import RedisClient
-from app.domain.value_objects.cache_entry import CacheEntry
+from fastapi import APIRouter, Depends, HTTPException
+from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
+from app.core.dependencies import get_forward_request_use_case
 
 router = APIRouter()
 
-# istanza concreta della cache
-redis_client = RedisClient()
-cache_manager = CacheManager(cache_service=redis_client)  # usa RedisClient come servizio concreto
 
 async def fetch_from_upstream(url: str) -> dict:
-    """
-    Funzione placeholder per simulare fetch da upstream.
-    """
-    # qui andrebbe la logica di forward request
     return {"url": url, "data": "upstream response"}
 
+
 @router.post("/")
-async def proxy_endpoint(payload: dict):
+async def proxy_endpoint(
+    payload: dict,
+    use_case: ForwardRequestUseCase = Depends(get_forward_request_use_case)
+):
+
     url = payload.get("url")
     if not url:
-        raise HTTPException(status_code=400, detail="Missing 'url' in payload")
+        raise HTTPException(status_code=400, detail="Missing 'url'")
 
-    cached = False
-    # ottieni o genera cache entry
-    entry: CacheEntry = await cache_manager.get_or_set(
-        key=url,
-        value_supplier=lambda: fetch_from_upstream(url),
-        ttl=60
-    )
+    result = await use_case.execute(url)
 
-    if not entry.is_expired:
-        cached = True
-
-    return {"data": entry.value, "cached": cached}
+    return {
+        "data": result.value,
+        "cached": result.from_cache
+    }

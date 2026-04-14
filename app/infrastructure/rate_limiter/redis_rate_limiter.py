@@ -2,7 +2,7 @@
 from app.domain.services.rate_limiter_interface import RateLimiterInterface
 
 
-class RedisRateLimiter(RateLimiterInterface):
+class RedisRateLimiter:
 
     def __init__(self, redis_client):
         self.redis = redis_client
