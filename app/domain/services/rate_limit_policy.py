@@ -1,15 +1,12 @@
 # app/domain/services/rate_limit_policy.py
+
+from app.domain.value_objects.client_ip import ClientIP
+from app.domain.value_objects.request_quota import RequestQuota
+
 class RateLimitPolicy:
 
-    def __init__(self, limit: int, period: int):
+    def __init__(self, limit: int):
         self.limit = limit
-        self.period = period
 
     def is_allowed(self, count: int) -> bool:
         return count <= self.limit
-    
-    def get_period(self) -> int:
-        return self.period
-    
-    def get_limit(self) -> int:
-        return self.limit

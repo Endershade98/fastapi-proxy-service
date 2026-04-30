@@ -2,7 +2,7 @@
 import json
 from datetime import datetime
 import redis.asyncio as redis
-from app.core.config import settings
+from app.config.settings import settings
 from app.domain.value_objects.cache_entry import CacheEntry
 
 class RedisClient:

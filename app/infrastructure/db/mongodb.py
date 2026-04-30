@@ -1,6 +1,6 @@
 # app/infrastructure/db/mongodb.py
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.core.config import settings
+from app.config.settings import settings
 
 
 class MongoDB:

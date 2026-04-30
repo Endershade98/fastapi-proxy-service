@@ -1,6 +1,6 @@
 # app/infrastructure/celery/celery_app.py
 from celery import Celery
-from app.core.config import settings
+from app.config.settings import settings
 
 celery_app = Celery(
     "proxy_tasks",
