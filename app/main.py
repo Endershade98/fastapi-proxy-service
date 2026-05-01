@@ -1,4 +1,5 @@
 # app/main.py
+
 from fastapi import FastAPI
 
 from app.interfaces.api.router import api_router

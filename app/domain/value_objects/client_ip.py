@@ -1,4 +1,5 @@
 # app/domain/value_objects/client_ip.py
+
 import ipaddress
 
 class ClientIP:

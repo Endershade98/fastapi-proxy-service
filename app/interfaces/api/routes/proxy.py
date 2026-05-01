@@ -1,7 +1,8 @@
 # app/interfaces/api/routes/proxy.py
+
 from fastapi import APIRouter, Depends, HTTPException
 from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
-from app.core.dependencies import get_forward_request_use_case
+from app.bootstrap.container import get_forward_request_use_case
 
 router = APIRouter()
 

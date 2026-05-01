@@ -1,10 +1,12 @@
 # app/interfaces/middleware/rate_limiter.py
+
 from fastapi import Request
 from typing import Callable
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 
 from app.domain.value_objects.client_ip import ClientIP
+from app.domain.value_objects.request_quota import RequestQuota
 from app.domain.services.rate_limit_policy import RateLimitPolicy
 from app.domain.events.log_event import LogEvent
 
@@ -13,10 +15,14 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
 
     def __init__(self, app, rate_limiter, logger, window: int = 60):
         super().__init__(app)
+
         self.rate_limiter = rate_limiter
         self.logger = logger
-        self.policy = RateLimitPolicy(limit=10, period=window)
         self.window = window
+
+        self.policy = RateLimitPolicy(
+            RequestQuota(limit=10, period=window)
+        )
 
     async def dispatch(self, request: Request, call_next: Callable):
 
@@ -35,7 +41,10 @@ class RateLimiterMiddleware(BaseHTTPMiddleware):
                     metadata={"count": count}
                 ))
 
-                return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"})
+                return JSONResponse(
+                    status_code=429,
+                    content={"detail": "Rate limit exceeded"}
+                )
 
             return await call_next(request)
 

@@ -1,7 +1,9 @@
 # app/infrastructure/logging/mongo_logger.py
+
 import logging
-from app.domain.services.logging_interface import LoggingInterface
+
 from app.domain.events.log_event import LogEvent
+from app.domain.repositories.event_logger_repository import LoggingInterface
 
 
 class MongoLogger(LoggingInterface):

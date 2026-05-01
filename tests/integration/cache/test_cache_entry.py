@@ -1,4 +1,5 @@
-# tests/unit/domain/test_cache_entry.py
+# tests/integration/cache/test_cache_entry.py
+
 import pytest
 from datetime import datetime, timedelta
 from app.domain.value_objects.cache_entry import CacheEntry

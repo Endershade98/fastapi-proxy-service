@@ -1,0 +1,1 @@
+# app/domain/entities/cache_entry.py

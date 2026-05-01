@@ -1,3 +1,5 @@
+# app/infrastructure/logging/setup.py
+
 import logging
 
 logger = logging.getLogger("app")

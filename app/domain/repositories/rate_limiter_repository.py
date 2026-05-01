@@ -1,4 +1,5 @@
-# domain/services/rate_limiter_interface.py
+# app/domain/repositories/rate_limiter_repository.py
+
 from abc import ABC, abstractmethod
 
 

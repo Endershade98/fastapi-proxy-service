@@ -1,4 +1,5 @@
-# app/domain/entities/cache_entry.py
+# app/domain/value_objects/cache_entry.py
+
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta
 

@@ -1,4 +1,5 @@
-# app/core/dependencies.py
+# app/bootstrap/container.py
+
 from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
 from app.infrastructure.cache.redis_client import RedisClient
 from app.application.proxy.use_cases.cache_management import CacheManager

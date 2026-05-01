@@ -1,4 +1,5 @@
 # app/infrastructure/clients/http_client.py
+
 import httpx
 
 

@@ -1,3 +1,5 @@
+# app/infrastructure/celery/tasks.py
+
 from app.infrastructure.celery.celery_app import celery_app
 from app.infrastructure.cache.cache_service import RedisCacheService
 from app.domain.value_objects.cache_entry import CacheEntry

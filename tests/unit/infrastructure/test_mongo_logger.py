@@ -1,4 +1,5 @@
 # tests/unit/infrastructure/test_mongo_logger.py
+
 import pytest
 from unittest.mock import AsyncMock
 from app.infrastructure.logging.mongo_logger import MongoLogger

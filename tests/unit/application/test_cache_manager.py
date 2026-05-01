@@ -1,4 +1,5 @@
 # tests/unit/application/test_cache_manager.py
+
 import pytest
 from unittest.mock import AsyncMock
 

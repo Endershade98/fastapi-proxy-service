@@ -1,3 +1,5 @@
+# tests/fixtures/cache.py
+
 import pytest
 from app.infrastructure.cache.cache_service import RedisCacheService
 

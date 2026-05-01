@@ -1,4 +1,5 @@
 # app/infrastructure/celery/celery_app.py
+
 from celery import Celery
 from app.config.settings import settings
 

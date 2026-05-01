@@ -1,13 +1,26 @@
 # tests/e2e/test_proxy_flow.py
+
 import pytest
 from httpx import AsyncClient, ASGITransport
 from app.main import create_app
 
 
 @pytest.mark.asyncio
-async def test_proxy_endpoint():
+async def test_proxy_endpoint(monkeypatch):
 
     app = create_app(testing=True)
+
+    async def fake_fetch(self, url):
+        return {
+            "url": url,
+            "data": "upstream response"
+        }
+
+    monkeypatch.setattr(
+        "app.infrastructure.clients.http_client.HttpClient.fetch",
+        fake_fetch
+    )
+
     transport = ASGITransport(app=app)
 
     async with AsyncClient(

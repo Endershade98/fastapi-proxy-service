@@ -1,4 +1,5 @@
 # app/application/proxy/use_cases/forward_request.py
+
 class ForwardRequestUseCase:
 
     def __init__(self, cache_manager, http_client):

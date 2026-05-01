@@ -1,4 +1,5 @@
 # app/application/proxy/dtos/cache_result.py
+
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 

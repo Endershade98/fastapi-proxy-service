@@ -1,4 +1,5 @@
-# app/domain/services/logging_interface.py
+# app/domain/repositories/event_logger_repository.py
+
 from abc import ABC, abstractmethod
 from app.domain.events.log_event import LogEvent
 

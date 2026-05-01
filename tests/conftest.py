@@ -1,8 +1,10 @@
+# tests/conftest.py
+
 import pytest
 from httpx import AsyncClient, ASGITransport
 
 from app.main import create_app
-from app.core.dependencies import get_cache_manager
+from app.bootstrap.container import get_cache_manager
 
 
 class FakeCacheManager:
