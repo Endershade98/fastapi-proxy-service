@@ -1,4 +1,5 @@
 # app/infrastructure/rate_limiter/redis_adapter.py
+
 from app.infrastructure.cache.redis_client import RedisClient
 
 class RedisAdapter:

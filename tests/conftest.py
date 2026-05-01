@@ -1,17 +1,35 @@
+# tests/conftest.py
+
 import pytest
-import asyncio
-from fastapi.testclient import TestClient
-from app.main import app
+from httpx import AsyncClient, ASGITransport
 
-# Event loop per async tests
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+from app.main import create_app
+from app.bootstrap.container import get_cache_manager
 
 
-# FastAPI client
+class FakeCacheManager:
+    async def get_or_set(self, key, value_supplier, ttl):
+        class Entry:
+            value = {"mock": True}
+            is_expired = True  # MISS → cached = False
+        return Entry()
+
+
 @pytest.fixture
-def client():
-    return TestClient(app)
+def app_instance():
+    app = create_app(testing=True)
+
+    app.dependency_overrides[get_cache_manager] = lambda: FakeCacheManager()
+
+    return app
+
+
+@pytest.fixture
+async def client(app_instance):
+    transport = ASGITransport(app=app_instance)
+
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://test"
+    ) as c:
+        yield c

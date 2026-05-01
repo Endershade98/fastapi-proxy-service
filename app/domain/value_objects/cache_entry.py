@@ -1,4 +1,5 @@
-# app/domain/entities/cache_entry.py
+# app/domain/value_objects/cache_entry.py
+
 from dataclasses import dataclass, field
 from datetime import datetime, timezone, timedelta
 
@@ -8,6 +9,10 @@ class CacheEntry:
     value: dict
     ttl: int = 60
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+
+    @property
+    def is_valid(self) -> bool:
+        return not self.is_expired
 
     @property
     def is_expired(self) -> bool:

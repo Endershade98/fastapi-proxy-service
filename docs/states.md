@@ -40,9 +40,3 @@ Questo documento elenca i principali stati delle richieste gestite dal ProxyServ
 
 ---
 
-## Note operative
-
-- I codici sono arbitrari e possono essere modificati per allinearsi con la tua implementazione.
-- Gli stati **RETRYING** e **FAILED** richiedono logging dettagliato per monitorare eventuali problemi upstream.
-- È consigliabile tracciare ogni transizione di stato nel log o in un sistema di monitoring (es. Prometheus/Grafana) per performance e debugging.
-- La tabella degli stati può essere integrata con **metriche di cache HIT/MISS** e **tempo di risposta per ogni stato**.
