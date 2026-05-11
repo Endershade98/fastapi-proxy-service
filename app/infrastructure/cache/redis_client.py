@@ -1,7 +1,7 @@
 # app/infrastructure/cache/redis_client.py
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 import redis.asyncio as redis
 
@@ -30,21 +30,20 @@ class RedisClient:
                 created_at=datetime.fromisoformat(data["created_at"])
             )
 
-        except Exception:
+        except (KeyError, ValueError, TypeError):
             return None
 
-    async def set(self, entry: CacheEntry):
-
+    async def set(self, entry: CacheEntry) -> None:
         payload = {
             "value": entry.value,
-            "ttl": entry.ttl,
+            "ttl": entry.ttl_seconds,
             "created_at": entry.created_at.isoformat()
         }
 
         await self.redis.set(
             entry.key,
             json.dumps(payload),
-            ex=entry.ttl
+            ex=entry.ttl_seconds
         )
 
     async def incr(self, key: str) -> int:

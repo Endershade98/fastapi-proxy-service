@@ -11,4 +11,5 @@ class MongoLogger(LoggerPort):
         self.collection = collection
 
     async def log(self, event):
-        log_event_task.delay(event.to_dict())
+        # Invece di scrivere direttamente su MongoDB, delega a un task Celery
+        log_event_task.delay(event.event_type, event.message)

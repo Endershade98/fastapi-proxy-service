@@ -1,1 +1,0 @@
-# tests/integration/clients/test_http_client.py

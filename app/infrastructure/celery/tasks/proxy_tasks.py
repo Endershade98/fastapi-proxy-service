@@ -16,7 +16,6 @@ def retry_proxy_request(self, url):
 
     async def run():
         client = HttpClient()
-        data = await client.fetch(url)
-        return data
+        return await client.fetch(url)
 
     return asyncio.run(run())
