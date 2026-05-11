@@ -1,14 +1,30 @@
 # app/application/proxy/use_cases/cache_management.py
 
-from app.domain.value_objects.cache_entry import CacheEntry
+from typing import Callable, Awaitable, Any
+
 from app.application.proxy.dtos.cache_result import CacheResult
+from app.domain.entities.cache_entry import CacheEntry
+from app.domain.services.cache_service_interface import CacheServiceInterface
+from app.domain.services.task_dispatcher_interface import TaskDispatcherInterface
 
 
-class CacheManager:
-    def __init__(self, cache_service):
+class GetOrSetCacheUseCase:
+
+    def __init__(
+        self,
+        cache_service: CacheServiceInterface,
+        dispatcher: TaskDispatcherInterface | None = None
+    ):
         self.cache_service = cache_service
+        self.dispatcher = dispatcher
 
-    async def get_or_set(self, key: str, value_supplier, ttl: int = 60) -> CacheResult:
+    async def get_or_set(
+        self,
+        key: str,
+        value_supplier: Callable[[], Awaitable[Any]],
+        ttl: int = 60
+    ) -> CacheResult:
+
         cached = await self.cache_service.get(key)
 
         if cached and not cached.is_expired:
@@ -19,8 +35,12 @@ class CacheManager:
 
         value = await value_supplier()
 
-        entry = CacheEntry(key=key, value=value, ttl=ttl)
-        await self.cache_service.set(entry)
+        if self.dispatcher:
+            await self.dispatcher.dispatch_cache_set(key, value, ttl)
+        else:
+            await self.cache_service.set(
+                CacheEntry(key=key, value=value, ttl=ttl)
+            )
 
         return CacheResult(
             value=value,

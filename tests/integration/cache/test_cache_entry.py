@@ -2,7 +2,7 @@
 
 import pytest
 from datetime import datetime, timedelta
-from app.domain.value_objects.cache_entry import CacheEntry
+from app.domain.entities.cache_entry import CacheEntry
 
 def test_cache_entry_immutable():
     entry = CacheEntry(key="k", value={"a":1})

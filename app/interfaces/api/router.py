@@ -2,8 +2,10 @@
 
 from fastapi import APIRouter
 from app.interfaces.api.routes import proxy
+from app.interfaces.api.routes import tasks
 
-api_router = APIRouter()
+router = APIRouter()
 
 # REGISTER ROUTES
-api_router.include_router(proxy.router, prefix="/proxy", tags=["proxy"])
+router.include_router(proxy.router, prefix="/proxy", tags=["proxy"])
+router.include_router(tasks.router, prefix="/tasks", tags=["tasks"])

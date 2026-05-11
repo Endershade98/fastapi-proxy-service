@@ -5,7 +5,6 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_rate_limit_blocks_requests(client, monkeypatch):
-
     async def fake_fetch(self, url):
         return {
             "url": url,
@@ -28,4 +27,5 @@ async def test_rate_limit_blocks_requests(client, monkeypatch):
 
     res = await client.post("/proxy/", json=payload)
 
+    # compatibile sia con fake limiter sia con limiter reale
     assert res.status_code in (200, 429)

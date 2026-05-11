@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 
+    # CELERY
+    USE_CELERY: bool = True
+    CELERY_BROKER_URL: str = REDIS_URL
+    CELERY_RESULT_BACKEND: str = REDIS_URL
+    RATE_LIMIT_REQUESTS: int = 100
+    RATE_LIMIT_WINDOW: int = 60  # in seconds
+
     # MONGO SETTINGS
     MONGO_DATABASE_NAME: str = os.getenv("MONGO_DATABASE_NAME", "fastapi_proxy_mongo_db")
     MONGO_DATABASE_PORT: int = os.getenv("MONGO_DATABASE_PORT", 27017)

@@ -1,7 +1,7 @@
 # tests/unit/domain/test_cache_entry.py
 
 import pytest
-from app.domain.value_objects.cache_entry import CacheEntry
+from app.domain.entities.cache_entry import CacheEntry
 
 def test_cache_entry_creation():
     entry = CacheEntry(key="test", value={"a": 1}, ttl=60)

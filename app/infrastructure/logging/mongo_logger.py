@@ -1,17 +1,14 @@
 # app/infrastructure/logging/mongo_logger.py
 
-import logging
-
-from app.domain.events.log_event import LogEvent
 from app.domain.repositories.event_logger_repository import LoggingInterface
+from app.infrastructure.celery.tasks.log_tasks import log_event_task
 
 
 class MongoLogger(LoggingInterface):
-    def __init__(self, collection):
+
+    def __init__(self, collection=None):
+        # collection NON serve più direttamente
         self.collection = collection
 
-    async def log(self, event: LogEvent) -> None:
-        try:
-            await self.collection.insert_one(event.to_dict())
-        except Exception as e:
-            logging.error(f"[MongoLogger ERROR] {e}")
+    async def log(self, event):
+        log_event_task.delay(event.to_dict())

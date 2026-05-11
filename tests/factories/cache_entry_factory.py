@@ -1,6 +1,6 @@
 # tests/factories/cache_entry_factory.py
 
-from app.domain.value_objects.cache_entry import CacheEntry
+from app.domain.entities.cache_entry import CacheEntry
 
 def cache_entry_factory(
     key="test:key",
