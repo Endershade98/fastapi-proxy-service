@@ -3,11 +3,19 @@
 from pathlib import Path
 
 
-def test_bootstrap_can_use_everything():
-    file = Path("app/bootstrap/container.py")
+def test_domain_must_not_import_outer_layers():
+    domain_files = Path("app/domain").rglob("*.py")
 
-    content = file.read_text()
+    forbidden = [
+        "app.infrastructure",
+        "app.interfaces",
+        "app.application",
+    ]
 
-    assert "app.domain" in content
-    assert "app.application" in content
-    assert "app.infrastructure" in content
+    for file in domain_files:
+        content = file.read_text(encoding="utf-8")
+
+        for item in forbidden:
+            assert item not in content, (
+                f"{file} imports outer layer {item}"
+            )

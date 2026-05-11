@@ -1,12 +1,12 @@
 # app/application/proxy/use_cases/retry_handler.py
 
-from app.domain.services.task_dispatcher_interface import TaskDispatcherInterface
+from app.domain.ports.task_dispatcher_port import TaskDispatcherPort
 
 
 class RetryHandler:
 
-    def __init__(self, dispatcher: TaskDispatcherInterface):
-        self.dispatcher = dispatcher
+    def __init__(self, dispatcher: TaskDispatcherPort):
+        self._dispatcher = dispatcher
 
-    async def dispatch_retry(self, url: str):
-        return await self.dispatcher.dispatch_retry(url)
+    async def execute(self, resource: str) -> str:
+        return await self._dispatcher.dispatch_retry(resource)

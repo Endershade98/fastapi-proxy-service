@@ -1,14 +1,16 @@
-# app/domain/services/cache_service_interface.py
+# app/domain/ports/cache_port.py
 
 from abc import ABC, abstractmethod
-from app.domain.entities.cache_entry import CacheEntry
 from typing import Optional
+from app.domain.value_objects.cache_entry import CacheEntry
 
-class CacheServiceInterface(ABC):
+
+class CachePort(ABC):
+
     @abstractmethod
     async def get(self, key: str) -> Optional[CacheEntry]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     async def set(self, entry: CacheEntry) -> None:
-        pass
+        raise NotImplementedError

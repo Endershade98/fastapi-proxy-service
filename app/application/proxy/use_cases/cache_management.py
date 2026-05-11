@@ -3,43 +3,51 @@
 from typing import Callable, Awaitable, Any
 
 from app.application.proxy.dtos.cache_result import CacheResult
-from app.domain.entities.cache_entry import CacheEntry
-from app.domain.services.cache_service_interface import CacheServiceInterface
-from app.domain.services.task_dispatcher_interface import TaskDispatcherInterface
+from app.domain.value_objects.cache_entry import CacheEntry
+from app.domain.ports.cache_port import CachePort
+from app.domain.ports.task_dispatcher_port import TaskDispatcherPort
 
 
 class GetOrSetCacheUseCase:
 
     def __init__(
         self,
-        cache_service: CacheServiceInterface,
-        dispatcher: TaskDispatcherInterface | None = None
+        cache_port: CachePort,
+        dispatcher: TaskDispatcherPort | None = None
     ):
-        self.cache_service = cache_service
-        self.dispatcher = dispatcher
+        self._cache = cache_port
+        self._dispatcher = dispatcher
 
-    async def get_or_set(
+    async def execute(
         self,
         key: str,
-        value_supplier: Callable[[], Awaitable[Any]],
-        ttl: int = 60
-    ) -> CacheResult:
+        supplier: Callable[[], Awaitable[Any]],
+        ttl_seconds: int = 60
+    ) -> CacheResult[Any]:
 
-        cached = await self.cache_service.get(key)
+        cached = await self._cache.get(key)
 
-        if cached and not cached.is_expired:
+        if cached and cached.is_valid:
             return CacheResult(
                 value=cached.value,
                 from_cache=True
             )
 
-        value = await value_supplier()
+        value = await supplier()
 
-        if self.dispatcher:
-            await self.dispatcher.dispatch_cache_set(key, value, ttl)
+        if self._dispatcher:
+            await self._dispatcher.dispatch_cache_set(
+                key=key,
+                value=value,
+                ttl_seconds=ttl_seconds
+            )
         else:
-            await self.cache_service.set(
-                CacheEntry(key=key, value=value, ttl=ttl)
+            await self._cache.set(
+                CacheEntry(
+                    key=key,
+                    value=value,
+                    ttl_seconds=ttl_seconds
+                )
             )
 
         return CacheResult(

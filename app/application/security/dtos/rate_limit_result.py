@@ -8,3 +8,4 @@ class RateLimitResult:
     allowed: bool
     limit: int
     remaining: int
+    retry_after_seconds: int

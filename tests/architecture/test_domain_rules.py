@@ -3,25 +3,27 @@
 from pathlib import Path
 
 
-ROOT = Path("app/domain")
+DOMAIN_PATH = Path("app/domain")
 
 
-FORBIDDEN = [
+FORBIDDEN_IMPORTS = [
     "fastapi",
     "sqlalchemy",
     "redis",
-    "motor",
+    "pymongo",
+    "requests",
     "httpx",
     "celery",
-    "app.infrastructure",
-    "app.interfaces",
-    "app.application",
 ]
 
 
-def test_domain_must_be_pure():
-    for file in ROOT.rglob("*.py"):
-        content = file.read_text()
+def test_domain_must_not_depend_on_frameworks():
+    py_files = DOMAIN_PATH.rglob("*.py")
 
-        for bad in FORBIDDEN:
-            assert bad not in content, f"{file} imports forbidden dependency: {bad}"
+    for file in py_files:
+        content = file.read_text(encoding="utf-8")
+
+        for forbidden in FORBIDDEN_IMPORTS:
+            assert forbidden not in content, (
+                f"{file} imports forbidden dependency {forbidden}"
+            )

@@ -14,14 +14,14 @@ class TaskStatusResult:
 class GetTaskStatusUseCase:
 
     def __init__(self, task_reader):
-        self.task_reader = task_reader
+        self._reader = task_reader
 
     def execute(self, task_id: str) -> TaskStatusResult:
 
-        result = self.task_reader.get_result(task_id)
+        task = self._reader.get_result(task_id)
 
         return TaskStatusResult(
             task_id=task_id,
-            status=result.status,
-            result=result.result if result.ready() else None
+            status=task.status,
+            result=task.result if task.ready() else None
         )

@@ -1,9 +1,9 @@
 # app/infrastructure/rate_limiter/redis_rate_limiter.py
 
-from app.domain.repositories.rate_limiter_repository import RateLimiterInterface
+from app.domain.ports.rate_limiter_port import RateLimiterPort
 
 
-class RedisRateLimiter(RateLimiterInterface):
+class RedisRateLimiter(RateLimiterPort):
 
     def __init__(self, redis_client):
         self.redis = redis_client

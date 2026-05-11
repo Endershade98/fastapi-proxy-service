@@ -1,36 +1,32 @@
 # app/application/security/use_cases/enforce_rate_limit.py
 
 from app.application.security.dtos.rate_limit_result import RateLimitResult
-from app.domain.services.rate_limit_policy import RateLimitPolicy
-from app.domain.repositories.rate_limiter_repository import RateLimiterInterface
+from app.domain.policies.rate_limit_policy import RateLimitPolicy
+from app.domain.ports.rate_limiter_port import RateLimiterPort
 
 
 class EnforceRateLimitUseCase:
 
     def __init__(
         self,
-        repository: RateLimiterInterface,
+        repository: RateLimiterPort,
         policy: RateLimitPolicy
     ):
-        self.repository = repository
-        self.policy = policy
+        self._repository = repository
+        self._policy = policy
 
     async def execute(self, key: str) -> RateLimitResult:
 
-        count = await self.repository.increment(
-            key,
-            self.policy.get_period()
+        count = await self._repository.increment(
+            key=key,
+            window_seconds=self._policy.window_seconds
         )
 
-        allowed = self.policy.is_allowed(count)
-
-        remaining = max(
-            self.policy.get_limit() - count,
-            0
-        )
+        decision = self._policy.evaluate(count)
 
         return RateLimitResult(
-            allowed=allowed,
-            limit=self.policy.get_limit(),
-            remaining=remaining
+            allowed=decision.allowed,
+            limit=self._policy.limit,
+            remaining=decision.remaining,
+            retry_after_seconds=decision.retry_after_seconds
         )

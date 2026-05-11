@@ -5,7 +5,8 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-@dataclass
+
+@dataclass(frozen=True)
 class CacheResult(Generic[T]):
     value: T
     from_cache: bool

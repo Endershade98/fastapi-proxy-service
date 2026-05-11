@@ -1,6 +1,6 @@
 # app/infrastructure/celery/sync_dispatcher.py
 
-from app.domain.entities.cache_entry import CacheEntry
+from app.domain.value_objects.cache_entry import CacheEntry
 
 
 class SyncTaskDispatcher:

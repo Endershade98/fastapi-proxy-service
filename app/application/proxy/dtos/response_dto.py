@@ -7,4 +7,4 @@ from typing import Any
 @dataclass(frozen=True)
 class ProxyResponseDTO:
     data: Any
-    cached: bool
+    from_cache: bool

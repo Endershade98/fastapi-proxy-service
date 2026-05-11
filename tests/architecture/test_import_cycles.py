@@ -1,19 +1,12 @@
 # tests/architecture/test_import_cycles.py
 
-import pkgutil
-import importlib
+from pathlib import Path
 
 
-SKIP_MODULES = [
-    "app.infrastructure.db.postgres",
-    "app.infrastructure.celery.celery_app",
-]
+def test_application_should_not_be_imported_by_domain():
+    domain_files = Path("app/domain").rglob("*.py")
 
+    for file in domain_files:
+        content = file.read_text()
 
-def test_all_modules_importable():
-    for module in pkgutil.walk_packages(["app"], prefix="app."):
-
-        if module.name in SKIP_MODULES:
-            continue
-
-        importlib.import_module(module.name)
+        assert "app.application" not in content

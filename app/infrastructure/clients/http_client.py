@@ -1,10 +1,10 @@
 # app/infrastructure/clients/http_client.py
 
 import httpx
-from app.domain.services.http_client_interface import HttpClientInterface
+from app.domain.ports.remote_resource_port import RemoteResourcePort
 
 
-class HttpClient(HttpClientInterface):
+class HttpClient(RemoteResourcePort):
 
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=10)

@@ -2,18 +2,21 @@
 
 from app.application.proxy.dtos.request_dto import ProxyRequestDTO
 from app.application.proxy.dtos.response_dto import ProxyResponseDTO
-from app.domain.services.http_client_interface import HttpClientInterface
+from app.application.proxy.use_cases.cache_management import (
+    GetOrSetCacheUseCase
+)
+from app.domain.ports.remote_resource_port import RemoteResourcePort
 
 
 class ForwardRequestUseCase:
 
     def __init__(
         self,
-        cache_use_case,
-        http_client: HttpClientInterface
+        cache_use_case: GetOrSetCacheUseCase,
+        remote_resource: RemoteResourcePort
     ):
-        self.cache = cache_use_case
-        self.http = http_client
+        self._cache = cache_use_case
+        self._remote = remote_resource
 
     async def execute(
         self,
@@ -21,15 +24,15 @@ class ForwardRequestUseCase:
     ) -> ProxyResponseDTO:
 
         async def supplier():
-            return await self.http.fetch(request.url)
+            return await self._remote.fetch(request.url)
 
-        result = await self.cache.get_or_set(
+        result = await self._cache.execute(
             key=request.url,
-            value_supplier=supplier,
-            ttl=request.ttl
+            supplier=supplier,
+            ttl_seconds=request.ttl_seconds
         )
 
         return ProxyResponseDTO(
             data=result.value,
-            cached=result.from_cache
+            from_cache=result.from_cache
         )

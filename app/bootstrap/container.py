@@ -13,7 +13,7 @@ from app.application.security.use_cases.enforce_rate_limit import (
 )
 
 # Domain
-from app.domain.services.rate_limit_policy import RateLimitPolicy
+from app.domain.policies.rate_limit_policy import RateLimitPolicy
 from app.domain.value_objects.request_quota import RequestQuota
 
 # Infrastructure

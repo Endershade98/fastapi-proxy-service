@@ -1,23 +1,23 @@
-# app/domain/services/task_dispatcher_interface.py
+# app/domain/ports/task_dispatcher_port.py
 
 from abc import ABC, abstractmethod
 from typing import Any
 
 
-class TaskDispatcherInterface(ABC):
+class TaskDispatcherPort(ABC):
 
     @abstractmethod
     async def dispatch_cache_set(
         self,
         key: str,
         value: Any,
-        ttl: int
+        ttl_seconds: int
     ) -> None:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     async def dispatch_retry(
         self,
-        url: str
+        resource: str
     ) -> str:
-        pass
+        raise NotImplementedError

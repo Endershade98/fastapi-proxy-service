@@ -6,7 +6,7 @@ from datetime import datetime
 import redis.asyncio as redis
 
 from app.config.settings import settings
-from app.domain.entities.cache_entry import CacheEntry
+from app.domain.value_objects.cache_entry import CacheEntry
 
 
 class RedisClient:

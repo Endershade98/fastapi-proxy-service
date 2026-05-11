@@ -1,11 +1,11 @@
 # app/infrastructure/cache/cache_service.py
 
-from app.domain.services.cache_service_interface import CacheServiceInterface
-from app.domain.entities.cache_entry import CacheEntry
+from app.domain.ports.cache_port import CachePort
+from app.domain.value_objects.cache_entry import CacheEntry
 from app.infrastructure.cache.redis_client import RedisClient
 
 
-class CacheService(CacheServiceInterface):
+class CacheService(CachePort):
 
     def __init__(self, redis: RedisClient):
         self.redis = redis

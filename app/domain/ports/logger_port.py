@@ -1,11 +1,12 @@
-# app/domain/repositories/event_logger_repository.py
+# app/domain/ports/logger_port.py
 
 from abc import ABC, abstractmethod
 from app.domain.events.log_event import LogEvent
 
 
-class LoggingInterface(ABC):
+class LoggerPort(ABC):
 
     @abstractmethod
     async def log(self, event: LogEvent) -> None:
-        pass
+        """Persist or publish a domain log event."""
+        raise NotImplementedError
