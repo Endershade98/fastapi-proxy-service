@@ -15,8 +15,7 @@ def save_cache_task(key, value, ttl):
 
         entry = CacheEntry(
             key=key,
-            value=value,
-            ttl=ttl
+            value=value
         )
 
         await client.set(entry)

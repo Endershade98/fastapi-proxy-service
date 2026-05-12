@@ -10,8 +10,7 @@ from app.domain.exceptions import InvalidTTLError
 def test_should_create_valid_cache_entry():
     entry = CacheEntry(
         key="abc",
-        value={"name": "john"},
-        ttl_seconds=60
+        value={"name": "john"}
     )
 
     assert entry.key == "abc"
@@ -24,7 +23,6 @@ def test_should_be_expired_when_time_passed():
     entry = CacheEntry(
         key="abc",
         value={"x": 1},
-        ttl_seconds=60,
         created_at=created_at
     )
 

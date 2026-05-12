@@ -1,27 +1,22 @@
 # tests/unit/infrastructure/logging/test_mongo_logger.py
 
-import pytest
-from unittest.mock import patch
-import dataclasses
-
-from app.infrastructure.logging.mongo_logger import MongoLogger
-from app.domain.events.log_event import LogEvent
+from app.infrastructure.app_logging.mongo_logger import MongoLogger
 
 
-@pytest.mark.asyncio
-async def test_mongo_logger_dispatches_celery_task():
+class FakeCollection:
+    def __init__(self):
+        self.inserted = []
 
-    logger = MongoLogger()
+    def insert_one(self, doc):
+        self.inserted.append(doc)
+        return True
 
-    event = LogEvent(
-        event_type="TEST",
-        message="hello"
-    )
 
-    with patch(
-        "app.infrastructure.celery.tasks.log_tasks.log_event_task.delay"
-    ) as mock_task:
+def test_mongo_logger_logs_event():
+    collection = FakeCollection()
+    logger = MongoLogger(collection)
 
-        await logger.log(event)
+    logger.log_event({"message": "hello"})
 
-        assert mock_task.called
+    assert len(collection.inserted) == 1
+    assert collection.inserted[0]["message"] == "hello"

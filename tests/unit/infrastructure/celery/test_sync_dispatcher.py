@@ -1,16 +1,14 @@
 # tests/unit/infrastructure/celery/test_sync_dispatcher.py
 
-import pytest
 from app.infrastructure.celery.sync_dispatcher import SyncTaskDispatcher
 
 
-@pytest.mark.asyncio
-async def test_sync_dispatcher_calls_cache_service(mocker):
+def test_sync_dispatcher_executes_task():
+    dispatcher = SyncTaskDispatcher()
 
-    cache_mock = mocker.AsyncMock()
+    def fake_task(data):
+        return data["x"] + 1
 
-    dispatcher = SyncTaskDispatcher(cache_mock)
+    result = dispatcher.dispatch(fake_task, {"x": 1})
 
-    await dispatcher.dispatch_cache_set("k", {"a": 1}, 60)
-
-    cache_mock.set.assert_called_once()
+    assert result == 2

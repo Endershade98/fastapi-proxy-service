@@ -12,8 +12,7 @@ class SyncTaskDispatcher:
 
         entry = CacheEntry(
             key=key,
-            value=value,
-            ttl_seconds=ttl
+            value=value
         )
 
         await self.cache_service.set(entry)

@@ -1,31 +1,26 @@
 # app/interfaces/api/routes/proxy.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
-from app.bootstrap.container import get_forward_request_use_case
+from app.interfaces.api.schemas.proxy import ProxyPayloadSchema, ProxyResponseSchema
 from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
-from app.application.proxy.dtos.request_dto import ProxyRequestDTO
-from app.interfaces.api.schemas.proxy import ProxyPayloadSchema
+from app.bootstrap.container import get_forward_request_use_case
 
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/", response_model=ProxyResponseSchema)
 async def proxy_endpoint(
     payload: ProxyPayloadSchema,
     use_case: ForwardRequestUseCase = Depends(get_forward_request_use_case),
 ):
-    if not payload.url:
-        raise HTTPException(status_code=400, detail="Missing url")
+    """
+    Thin controller:
+    - No validation logic
+    - No DTO mapping logic
+    - No response shaping logic
+    """
 
-    request_dto = ProxyRequestDTO(
-        url=payload.url,
-        ttl=payload.ttl,
-    )
+    result = await use_case.execute(payload.to_dto())
 
-    result = await use_case.execute(request_dto)
-
-    return {
-        "data": result.data,
-        "cached": result.cached,
-    }
+    return ProxyResponseSchema.from_result(result)

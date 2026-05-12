@@ -13,7 +13,7 @@ async def test_cache_hit_returns_cached_value():
     cache = AsyncMock()
     dispatcher = AsyncMock()
 
-    entry = CacheEntry(key="k", value={"x": 1}, ttl_seconds=60)
+    entry = CacheEntry(key="k", value={"x": 1})
 
     cache.get.return_value = entry
 

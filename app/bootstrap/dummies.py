@@ -1,7 +1,10 @@
 # app/bootstrap/dummies.py
 
 class DummyRateLimiter:
-    async def increment(self, key: str, window: int):
+    async def is_allowed(self, key: str) -> bool:
+        return True
+
+    async def increment(self, key: str, window_seconds: int) -> int:
         return 0
 
 
