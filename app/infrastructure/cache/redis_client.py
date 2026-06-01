@@ -1,9 +1,9 @@
 # app/infrastructure/cache/redis_client.py
 
 import json
-from datetime import datetime, timezone
-
 import redis.asyncio as redis
+
+from datetime import datetime
 
 from app.config.settings import settings
 from app.domain.value_objects.cache_entry import CacheEntry
@@ -26,8 +26,10 @@ class RedisClient:
             return CacheEntry(
                 key=key,
                 value=data["value"],
-                ttl=data["ttl"],
-                created_at=datetime.fromisoformat(data["created_at"])
+                ttl_seconds=data["ttl"],
+                created_at=datetime.fromisoformat(
+                    data["created_at"]
+                )
             )
 
         except (KeyError, ValueError, TypeError):
@@ -51,3 +53,6 @@ class RedisClient:
 
     async def expire(self, key: str, seconds: int):
         await self.redis.expire(key, seconds)
+
+    async def delete(self, key: str) -> None:
+        await self.redis.delete(key)

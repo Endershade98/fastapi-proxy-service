@@ -7,17 +7,5 @@ from typing import Any
 class TaskDispatcherPort(ABC):
 
     @abstractmethod
-    async def dispatch_cache_set(
-        self,
-        key: str,
-        value: Any,
-        ttl_seconds: int
-    ) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def dispatch_retry(
-        self,
-        resource: str
-    ) -> str:
+    async def dispatch(self, task: str, payload: dict) -> str:
         raise NotImplementedError

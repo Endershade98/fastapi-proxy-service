@@ -1,28 +1,32 @@
 # app/interfaces/api/schemas/proxy.py
 
 from pydantic import BaseModel, HttpUrl
-from app.application.proxy.dtos.request_dto import ProxyRequestDTO
-from app.application.proxy.dtos.response_dto import ProxyResponseDTO
+from typing import Any
+
+from pydantic import (
+    BaseModel,
+    HttpUrl,
+    Field,
+)
 
 
 class ProxyPayloadSchema(BaseModel):
+
     url: HttpUrl
-    ttl: int = 60
 
-    def to_dto(self) -> ProxyRequestDTO:
-        return ProxyRequestDTO(
-            url=str(self.url),
-            ttl=self.ttl
-        )
-
+    ttl: int = Field(
+        default=60,
+        gt=0,
+        le=86400,
+    )
 
 class ProxyResponseSchema(BaseModel):
-    data: dict
-    cached: bool
+    data: Any
+    from_cache: bool
 
     @classmethod
-    def from_result(cls, result: ProxyResponseDTO):
+    def from_result(cls, result):
         return cls(
             data=result.data,
-            cached=result.cached
+            from_cache=result.from_cache
         )

@@ -2,46 +2,43 @@
 
 from fastapi import FastAPI
 
-from app.bootstrap.dummies import DummyLogger, DummyRateLimiter
+from app.bootstrap.container import (
+    get_rate_limit_use_case,
+    get_event_publisher,
+)
+
 from app.interfaces.api.router import router
 from app.interfaces.middleware.rate_limiter import RateLimiterMiddleware
-
-from app.infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
-from app.infrastructure.cache.redis_client import RedisClient
-from app.infrastructure.app_logging.mongo_logger import MongoLogger
-from app.infrastructure.db.mongodb import get_mongo
+from app.bootstrap.dummies import DummyEventPublisher
 
 
-def create_app(testing: bool = False, rate_limiter=None, logger=None):
+def create_app(testing: bool = False):
+
     app = FastAPI()
 
-    # ----------------------------
-    # Dependency resolution
-    # ----------------------------
+    # =====================================================
+    # DEPENDENCIES
+    # =====================================================
+
+    rate_limit_use_case = get_rate_limit_use_case()
+
     if testing:
-        rate_limiter = rate_limiter or DummyRateLimiter()
-        logger = logger or DummyLogger()
-
+        publisher = DummyEventPublisher()
     else:
-        # Infra wiring (production)
-        mongo_client = get_mongo()
-        redis_client = RedisClient()
+        publisher = get_event_publisher()
 
-        rate_limiter = RedisRateLimiter(redis_client)
-        logger = MongoLogger(mongo_client)
-
-    # ----------------------------
-    # Middleware
-    # ----------------------------
+    # =====================================================
+    # MIDDLEWARE
+    # =====================================================
     app.add_middleware(
         RateLimiterMiddleware,
-        rate_limiter=rate_limiter,
-        logger=logger,
+        rate_limit_use_case=rate_limit_use_case,
+        publisher=publisher,
     )
 
-    # ----------------------------
-    # Routes
-    # ----------------------------
+    # =====================================================
+    # ROUTES
+    # =====================================================
     app.include_router(router)
 
     return app

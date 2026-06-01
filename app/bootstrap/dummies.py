@@ -1,13 +1,14 @@
 # app/bootstrap/dummies.py
 
-class DummyRateLimiter:
-    async def is_allowed(self, key: str) -> bool:
-        return True
+from app.domain.ports.rate_limiter_port import RateLimiterPort
+from app.domain.ports.event_publisher_port import EventPublisherPort
 
+
+class DummyRateLimiter(RateLimiterPort):
     async def increment(self, key: str, window_seconds: int) -> int:
         return 0
 
 
-class DummyLogger:
-    async def log(self, event):
+class DummyEventPublisher(EventPublisherPort):
+    async def publish(self, event) -> None:
         pass

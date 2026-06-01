@@ -1,12 +1,13 @@
 # app/interfaces/api/schemas/tasks.py
 
 from pydantic import BaseModel
+from typing import Any
 
 
 class TaskStatusResponseSchema(BaseModel):
     task_id: str
     status: str
-    result: dict | None
+    result: Any | None
 
     @classmethod
     def from_result(cls, result):

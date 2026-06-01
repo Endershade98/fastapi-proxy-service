@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 
     # CELERY
-    USE_CELERY: bool = True
+    USE_CELERY: bool = (os.getenv("USE_CELERY", "True").lower() in ("true", "1", "t"))
     CELERY_BROKER_URL: str = REDIS_URL
     CELERY_RESULT_BACKEND: str = REDIS_URL
     RATE_LIMIT_REQUESTS: int = 100

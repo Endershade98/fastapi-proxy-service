@@ -8,10 +8,10 @@ class RedisRateLimiter(RateLimiterPort):
     def __init__(self, redis_client):
         self.redis = redis_client
 
-    async def increment(self, key: str, window: int) -> int:
+    async def increment(self, key: str, window_seconds: int) -> int:
         count = await self.redis.incr(key)
 
         if count == 1:
-            await self.redis.expire(key, window)
+            await self.redis.expire(key, window_seconds)
 
         return count

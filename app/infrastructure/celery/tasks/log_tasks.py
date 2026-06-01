@@ -1,21 +1,28 @@
 # app/infrastructure/celery/tasks/log_tasks.py
 
-from app.infrastructure.celery.celery_app import celery_app
-from app.infrastructure.db.mongodb import get_logs_collection
+import asyncio
+
+from app.infrastructure.celery.celery_app import (
+    celery_app
+)
+
+from app.infrastructure.db.mongodb import (
+    get_logs_collection
+)
 
 
 @celery_app.task(name="log_event_task")
-def log_event_task(event: dict):
+def log_event_task(event_type: str, message: str, **kwargs):
 
-    collection = get_logs_collection()
+    async def run():
 
-    import asyncio
+        collection = get_logs_collection()
 
-    async def _insert():
-        await collection.insert_one(event)
+        await collection.insert_one(
+            {
+                "event_type": event_type,
+                "message": message,
+            }
+        )
 
-    try:
-        asyncio.run(_insert())
-    except RuntimeError:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(_insert())
+    asyncio.run(run())

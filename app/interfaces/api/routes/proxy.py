@@ -2,9 +2,13 @@
 
 from fastapi import APIRouter, Depends
 
-from app.interfaces.api.schemas.proxy import ProxyPayloadSchema, ProxyResponseSchema
-from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
-from app.bootstrap.container import get_forward_request_use_case
+from app.bootstrap.container import get_forward_proxy_use_case
+from app.application.proxy.use_cases.forward_proxy_request import ForwardProxyRequestUseCase
+
+from app.interfaces.api.schemas.proxy import (
+    ProxyPayloadSchema,
+    ProxyResponseSchema
+)
 
 router = APIRouter()
 
@@ -12,15 +16,11 @@ router = APIRouter()
 @router.post("/", response_model=ProxyResponseSchema)
 async def proxy_endpoint(
     payload: ProxyPayloadSchema,
-    use_case: ForwardRequestUseCase = Depends(get_forward_request_use_case),
+    use_case: ForwardProxyRequestUseCase = Depends(get_forward_proxy_use_case),
 ):
-    """
-    Thin controller:
-    - No validation logic
-    - No DTO mapping logic
-    - No response shaping logic
-    """
-
-    result = await use_case.execute(payload.to_dto())
+    result = await use_case.execute(
+        url=str(payload.url),
+        ttl=payload.ttl
+    )
 
     return ProxyResponseSchema.from_result(result)
