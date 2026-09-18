@@ -1,17 +1,20 @@
 # app/domain/value_objects/client_ip.py
 
 import ipaddress
+from dataclasses import dataclass
+from app.domain.exceptions import InvalidIPError
 
+
+@dataclass(frozen=True)
 class ClientIP:
-    def __init__(self, ip: str):
+    value: str
+
+    def __post_init__(self):
         try:
-            self._ip = ipaddress.ip_address(ip)
+            normalized = str(ipaddress.ip_address(self.value))
+            object.__setattr__(self, "value", normalized)
         except ValueError:
-            raise ValueError(f"Invalid IP address: {ip}")
+            raise InvalidIPError(self.value)
 
-    @property
-    def value(self) -> str:
-        return str(self._ip)
-
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value

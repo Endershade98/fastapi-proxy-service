@@ -1,65 +1,107 @@
 # app/interfaces/middleware/rate_limiter.py
 
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
 from typing import Callable
-from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi.responses import JSONResponse
+
+from app.application.security.use_cases.enforce_rate_limit import EnforceRateLimitUseCase
+from app.domain.ports.event_publisher_port import EventPublisherPort
+
+from app.domain.events.system_events import (
+    RequestLoggedEvent,
+    RateLimitExceededEvent,
+)
 
 from app.domain.value_objects.client_ip import ClientIP
-from app.domain.value_objects.request_quota import RequestQuota
-from app.domain.services.rate_limit_policy import RateLimitPolicy
-from app.domain.events.log_event import LogEvent
 
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
 
-    def __init__(self, app, rate_limiter, logger, window: int = 60):
+    def __init__(
+        self,
+        app,
+        rate_limit_use_case: EnforceRateLimitUseCase,
+        publisher: EventPublisherPort,
+    ):
         super().__init__(app)
-
-        self.rate_limiter = rate_limiter
-        self.logger = logger
-        self.window = window
-
-        self.policy = RateLimitPolicy(
-            RequestQuota(limit=10, period=window)
-        )
+        self.rate_limit_use_case = rate_limit_use_case
+        self.publisher = publisher
 
     async def dispatch(self, request: Request, call_next: Callable):
 
-        client_ip = ClientIP(request.client.host)
-        key = f"rate:{client_ip.value}"
+        # =====================================================
+        # CLIENT IP (REAL VALUE OBJECT USAGE)
+        # =====================================================
+        raw_ip = (
+            request.headers.get("x-forwarded-for")
+            or (request.client.host if request.client else None)
+            or "127.0.0.1"
+        )
 
-        try:
-            count = await self.rate_limiter.increment(key, self.window)
+        ip_obj = ClientIP(raw_ip.split(",")[0].strip())
+        ip = str(ip_obj)
 
-            if not self.policy.is_allowed(count):
+        # =====================================================
+        # RATE LIMIT CHECK
+        # =====================================================
+        result = await self.rate_limit_use_case.execute(ip)
 
-                await self._safe_log(LogEvent(
-                    event_type="RATE_LIMIT_EXCEEDED",
-                    message="Rate limit exceeded",
-                    client_ip=client_ip.value,
-                    metadata={"count": count}
-                ))
+        if not result.allowed:
 
-                return JSONResponse(
-                    status_code=429,
-                    content={"detail": "Rate limit exceeded"}
+            await self.publisher.publish(
+                RateLimitExceededEvent(
+                    client_ip=ip,
+                    limit=result.limit,
+                    window_seconds=self.rate_limit_use_case.policy.window_seconds,
                 )
+            )
 
-            return await call_next(request)
+            return self._rate_limited_response(
+                limit=result.limit,
+                remaining=result.remaining,
+                retry_after=result.retry_after_seconds,
+            )
 
-        except Exception as e:
+        # =====================================================
+        # PROCESS REQUEST
+        # =====================================================
+        response = await call_next(request)
 
-            await self._safe_log(LogEvent(
-                event_type="RATE_LIMIT_ERROR",
-                message=str(e),
-                client_ip=client_ip.value
-            ))
+        # =====================================================
+        # ADD RATE LIMIT HEADERS (EPIC 2 FIX)
+        # =====================================================
+        response.headers["X-RateLimit-Limit"] = str(result.limit)
+        response.headers["X-RateLimit-Remaining"] = str(result.remaining)
+        response.headers["Retry-After"] = str(result.retry_after_seconds)
 
-            return await call_next(request)
+        # =====================================================
+        # LOG REQUEST EVENT
+        # =====================================================
+        await self.publisher.publish(
+            RequestLoggedEvent(
+                event_type="http_request",
+                path=str(request.url.path),
+                client_ip=ip,
+            )
+        )
 
-    async def _safe_log(self, event):
-        try:
-            await self.logger.log(event)
-        except Exception:
-            pass
+        return response
+
+    def _rate_limited_response(self, limit: int, remaining: int, retry_after: int):
+
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(
+            status_code=429,
+            headers={
+                "X-RateLimit-Limit": str(limit),
+                "X-RateLimit-Remaining": "0",
+                "Retry-After": str(retry_after),
+            },
+            content={
+                "detail": "Too many requests",
+                "limit": limit,
+                "remaining": remaining,
+                "retry_after": retry_after,
+            },
+        )

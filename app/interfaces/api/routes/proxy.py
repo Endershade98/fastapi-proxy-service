@@ -1,29 +1,26 @@
 # app/interfaces/api/routes/proxy.py
 
-from fastapi import APIRouter, Depends, HTTPException
-from app.application.proxy.use_cases.forward_request import ForwardRequestUseCase
-from app.bootstrap.container import get_forward_request_use_case
+from fastapi import APIRouter, Depends
+
+from app.bootstrap.container import get_forward_proxy_use_case
+from app.application.proxy.use_cases.forward_proxy_request import ForwardProxyRequestUseCase
+
+from app.interfaces.api.schemas.proxy import (
+    ProxyPayloadSchema,
+    ProxyResponseSchema
+)
 
 router = APIRouter()
 
 
-async def fetch_from_upstream(url: str) -> dict:
-    return {"url": url, "data": "upstream response"}
-
-
-@router.post("/")
+@router.post("/", response_model=ProxyResponseSchema)
 async def proxy_endpoint(
-    payload: dict,
-    use_case: ForwardRequestUseCase = Depends(get_forward_request_use_case)
+    payload: ProxyPayloadSchema,
+    use_case: ForwardProxyRequestUseCase = Depends(get_forward_proxy_use_case),
 ):
+    result = await use_case.execute(
+        url=str(payload.url),
+        ttl=payload.ttl
+    )
 
-    url = payload.get("url")
-    if not url:
-        raise HTTPException(status_code=400, detail="Missing 'url'")
-
-    result = await use_case.execute(url)
-
-    return {
-        "data": result.value,
-        "cached": result.from_cache
-    }
+    return ProxyResponseSchema.from_result(result)

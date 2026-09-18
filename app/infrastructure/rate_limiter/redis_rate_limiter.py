@@ -1,17 +1,17 @@
 # app/infrastructure/rate_limiter/redis_rate_limiter.py
 
-from app.domain.repositories.rate_limiter_repository import RateLimiterInterface
+from app.domain.ports.rate_limiter_port import RateLimiterPort
 
 
-class RedisRateLimiter(RateLimiterInterface):
+class RedisRateLimiter(RateLimiterPort):
 
     def __init__(self, redis_client):
         self.redis = redis_client
 
-    async def increment(self, key: str, window: int) -> int:
+    async def increment(self, key: str, window_seconds: int) -> int:
         count = await self.redis.incr(key)
 
         if count == 1:
-            await self.redis.expire(key, window)
+            await self.redis.expire(key, window_seconds)
 
         return count

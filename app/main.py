@@ -1,38 +1,40 @@
 # app/main.py
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from app.interfaces.api.router import api_router
+from app.bootstrap.container import get_rate_limit_use_case, get_event_publisher
 from app.interfaces.middleware.rate_limiter import RateLimiterMiddleware
-
-from app.infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
-from app.infrastructure.cache.redis_client import redis_client
-from app.infrastructure.logging.mongo_logger import MongoLogger
-from app.infrastructure.db.mongodb import get_mongo
+from app.interfaces.api.router import router
+from app.bootstrap.dummies import DummyEventPublisher
+from app.infrastructure.cache.redis_client import RedisClient
 
 
 def create_app(testing: bool = False):
 
-    app = FastAPI()
+    redis_client = RedisClient()
 
-    if testing:
-        # fake infra injected via conftest
-        rate_limiter = None
-        logger = None
-    else:
-        mongo = get_mongo()
-        logger = MongoLogger(collection=mongo.get_collection("logs"))
-        rate_limiter = RedisRateLimiter(redis_client)
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        yield
+        # CLEAN SHUTDOWN
+        try:
+            await redis_client.close()
+        except Exception:
+            pass
+
+    app = FastAPI(lifespan=lifespan)
+
+    rate_limit_use_case = get_rate_limit_use_case()
+
+    publisher = DummyEventPublisher() if testing else get_event_publisher()
 
     app.add_middleware(
         RateLimiterMiddleware,
-        rate_limiter=rate_limiter,
-        logger=logger
+        rate_limit_use_case=rate_limit_use_case,
+        publisher=publisher,
     )
 
-    app.include_router(api_router)
+    app.include_router(router)
 
     return app
-
-
-app = create_app()
