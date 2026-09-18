@@ -18,17 +18,20 @@ from app.domain.value_objects.request_quota import RequestQuota
 from app.infrastructure.cache.redis_client import RedisClient
 from app.infrastructure.clients.http_client import HttpClient
 from app.infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
-from app.infrastructure.celery.sync_dispatcher import SyncTaskDispatcher
 from app.infrastructure.celery.celery_app import celery_app
+from app.infrastructure.celery.event_publisher import CeleryEventPublisher
 from app.infrastructure.tasks.celery_task_reader import CeleryTaskReader
 from app.infrastructure.cache.cache_service import CacheService
 
-from app.infrastructure.app_logging.mongo_event_publisher import MongoEventPublisher
+
+@lru_cache
+def get_redis_client():
+    return RedisClient()
 
 
 @lru_cache
 def get_cache_service():
-    return CacheService(RedisClient())
+    return CacheService(get_redis_client())
 
 
 @lru_cache
@@ -90,4 +93,4 @@ def get_task_status_use_case():
 
 @lru_cache
 def get_event_publisher():
-    return MongoEventPublisher()
+    return CeleryEventPublisher()

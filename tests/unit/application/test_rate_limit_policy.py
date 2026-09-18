@@ -18,3 +18,16 @@ def test_rate_limit_exceeded():
 
     assert result.allowed is False
     assert result.remaining == 0
+
+def test_rate_limit_allows_and_blocks():
+    from app.domain.policies.rate_limit_policy import RateLimitPolicy
+    from app.domain.value_objects.request_quota import RequestQuota
+
+    policy = RateLimitPolicy(RequestQuota(limit=10, window_seconds=60))
+
+    ok = policy.evaluate(5)
+    assert ok.allowed is True
+
+    bad = policy.evaluate(20)
+    assert bad.allowed is False
+    assert bad.remaining == 0

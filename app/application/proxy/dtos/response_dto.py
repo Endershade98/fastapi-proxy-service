@@ -6,5 +6,6 @@ from typing import Any
 
 @dataclass(frozen=True)
 class ProxyResponseDTO:
+    url: str
     data: Any
     from_cache: bool

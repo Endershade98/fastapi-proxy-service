@@ -21,12 +21,14 @@ class ProxyPayloadSchema(BaseModel):
     )
 
 class ProxyResponseSchema(BaseModel):
+    url: str
     data: Any
     from_cache: bool
 
     @classmethod
     def from_result(cls, result):
         return cls(
+            url=result.url,
             data=result.data,
             from_cache=result.from_cache
         )

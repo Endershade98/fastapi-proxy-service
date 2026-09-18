@@ -20,8 +20,10 @@ class GetTaskStatusUseCase:
 
         task = self._reader.get_result(task_id)
 
+        status = task.status.lower()
+
         return TaskStatusResult(
             task_id=task_id,
-            status=task.status,
+            status=status,
             result=task.result if task.ready() else None
         )

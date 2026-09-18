@@ -6,8 +6,8 @@ from app.domain.ports.remote_resource_port import RemoteResourcePort
 
 class HttpClient(RemoteResourcePort):
 
-    def __init__(self):
-        self.client = httpx.AsyncClient(timeout=10)
+    def __init__(self, client: httpx.AsyncClient | None = None):
+        self.client = client or httpx.AsyncClient(timeout=3)
 
     async def fetch(self, url: str):
         response = await self.client.get(url)
@@ -15,9 +15,10 @@ class HttpClient(RemoteResourcePort):
 
         content_type = response.headers.get("content-type", "")
 
-        # JSON API
         if "application/json" in content_type:
             return response.json()
 
-        # HTML / text fallback (IMPORTANT per proxy e2e)
         return response.text
+
+    async def close(self):
+        await self.client.aclose()

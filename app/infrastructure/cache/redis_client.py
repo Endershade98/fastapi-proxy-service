@@ -34,6 +34,10 @@ class RedisClient:
 
         except (KeyError, ValueError, TypeError):
             return None
+    
+    async def get_ttl(self, key: str) -> int | None:
+        ttl = await self.redis.ttl(key)
+        return ttl if ttl >= 0 else None
 
     async def set(self, entry: CacheEntry) -> None:
         payload = {
@@ -56,3 +60,6 @@ class RedisClient:
 
     async def delete(self, key: str) -> None:
         await self.redis.delete(key)
+    
+    async def close(self):
+        await self.redis.close()

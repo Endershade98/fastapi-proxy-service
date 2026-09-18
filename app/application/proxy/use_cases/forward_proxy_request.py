@@ -21,11 +21,7 @@ class ForwardProxyRequestUseCase:
     remote_resource: RemoteResourcePort
     cache_use_case: GetOrSetCacheUseCase
 
-    async def execute(
-        self,
-        url: str,
-        ttl: int = 60,
-    ) -> ProxyResponseDTO:
+    async def execute(self, url: str, ttl: int = 60) -> ProxyResponseDTO:
 
         result = await self.cache_use_case.execute(
             key=url,
@@ -34,6 +30,7 @@ class ForwardProxyRequestUseCase:
         )
 
         return ProxyResponseDTO(
+            url=url,
             data=result.value,
             from_cache=result.from_cache,
         )

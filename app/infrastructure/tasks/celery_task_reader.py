@@ -9,4 +9,7 @@ class CeleryTaskReader:
         self.celery_app = celery_app
 
     def get_result(self, task_id: str):
-        return AsyncResult(task_id, app=self.celery_app)
+
+        result = AsyncResult(task_id, app=self.celery_app)
+
+        return result
