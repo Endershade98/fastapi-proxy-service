@@ -1,12 +1,12 @@
 # app/infrastructure/cache/redis_client.py
 
 import json
-import redis.asyncio as redis
-
 from datetime import datetime
 
+import redis.asyncio as redis
+
+from app.application.caching.models import CacheEntry
 from app.config.settings import settings
-from app.domain.value_objects.cache_entry import CacheEntry
 
 
 class RedisClient:
@@ -29,12 +29,12 @@ class RedisClient:
                 ttl_seconds=data["ttl"],
                 created_at=datetime.fromisoformat(
                     data["created_at"]
-                )
+                ),
             )
 
         except (KeyError, ValueError, TypeError):
             return None
-    
+
     async def get_ttl(self, key: str) -> int | None:
         ttl = await self.redis.ttl(key)
         return ttl if ttl >= 0 else None
@@ -43,23 +43,23 @@ class RedisClient:
         payload = {
             "value": entry.value,
             "ttl": entry.ttl_seconds,
-            "created_at": entry.created_at.isoformat()
+            "created_at": entry.created_at.isoformat(),
         }
 
         await self.redis.set(
             entry.key,
             json.dumps(payload),
-            ex=entry.ttl_seconds
+            ex=entry.ttl_seconds,
         )
 
     async def incr(self, key: str) -> int:
         return await self.redis.incr(key)
 
-    async def expire(self, key: str, seconds: int):
+    async def expire(self, key: str, seconds: int) -> None:
         await self.redis.expire(key, seconds)
 
     async def delete(self, key: str) -> None:
         await self.redis.delete(key)
-    
-    async def close(self):
+
+    async def close(self) -> None:
         await self.redis.close()

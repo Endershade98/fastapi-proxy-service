@@ -2,8 +2,8 @@
 
 import uuid
 
-from app.domain.ports.task_dispatcher_port import (
-    TaskDispatcherPort
+from app.application.ports.task_dispatcher import (
+    TaskDispatcherPort,
 )
 
 
@@ -12,7 +12,7 @@ class SyncTaskDispatcher(TaskDispatcherPort):
     async def dispatch(
         self,
         task: str,
-        payload: dict
+        payload: dict,
     ) -> str:
 
         return str(uuid.uuid4())

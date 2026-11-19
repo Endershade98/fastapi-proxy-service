@@ -1,8 +1,7 @@
 # app/domain/exceptions.py
 
 class DomainException(Exception):
-    """Base exception for domain errors."""
-    pass
+    """Base exception for all domain errors."""
 
 
 class InvalidIPError(DomainException):
@@ -12,19 +11,6 @@ class InvalidIPError(DomainException):
 
 class InvalidQuotaError(DomainException):
     def __init__(self):
-        super().__init__("Quota values must be greater than zero")
-
-
-class QuotaExceededError(DomainException):
-    def __init__(self):
-        super().__init__("Quota exceeded")
-
-
-class CacheExpiredError(DomainException):
-    def __init__(self):
-        super().__init__("Cache entry expired")
-
-
-class InvalidTTLError(DomainException):
-    def __init__(self):
-        super().__init__("TTL must be greater than zero")
+        super().__init__(
+            "Quota values must be greater than zero"
+        )

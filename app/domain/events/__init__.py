@@ -1,3 +1,5 @@
-# app/domain/events/__init__.py
+from .rate_limit import RateLimitExceeded
 
-from .log_event import LogEvent
+__all__ = [
+    "RateLimitExceeded",
+]
