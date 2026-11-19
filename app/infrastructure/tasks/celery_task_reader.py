@@ -2,14 +2,16 @@
 
 from celery.result import AsyncResult
 
+from app.application.ports.task_reader import TaskReaderPort
 
-class CeleryTaskReader:
+
+class CeleryTaskReader(TaskReaderPort):
 
     def __init__(self, celery_app):
-        self.celery_app = celery_app
+        self._celery_app = celery_app
 
     def get_result(self, task_id: str):
-
-        result = AsyncResult(task_id, app=self.celery_app)
-
-        return result
+        return AsyncResult(
+            task_id,
+            app=self._celery_app,
+        )

@@ -1,0 +1,289 @@
+========== REPOSITORY STRUCTURE ==========
+.
+├── app
+│   ├── application
+│   │   ├── caching
+│   │   │   ├── __init__.py
+│   │   │   ├── models.py
+│   │   │   └── use_cases
+│   │   │       ├── get_or_set_cache.py
+│   │   │       └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── logging
+│   │   │   └── use_cases
+│   │   │       └── publish_event.py
+│   │   ├── ports
+│   │   │   ├── cache.py
+│   │   │   ├── event_publisher.py
+│   │   │   ├── __init__.py
+│   │   │   ├── rate_limiter.py
+│   │   │   ├── remote_resource.py
+│   │   │   ├── task_dispatcher.py
+│   │   │   └── task_reader.py
+│   │   ├── proxy
+│   │   │   ├── dtos
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── request_dto.py
+│   │   │   │   └── response_dto.py
+│   │   │   ├── __init__.py
+│   │   │   └── use_cases
+│   │   │       ├── forward_proxy_request.py
+│   │   │       └── __init__.py
+│   │   ├── security
+│   │   │   ├── dtos
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── rate_limit_result.py
+│   │   │   ├── __init__.py
+│   │   │   └── use_cases
+│   │   │       ├── enforce_rate_limit.py
+│   │   │       └── __init__.py
+│   │   └── tasks
+│   │       ├── __init__.py
+│   │       └── use_cases
+│   │           ├── get_task_status.py
+│   │           └── __init__.py
+│   ├── bootstrap
+│   │   ├── container.py
+│   │   └── dummies.py
+│   ├── config
+│   │   └── settings.py
+│   ├── domain
+│   │   ├── events
+│   │   │   ├── __init__.py
+│   │   │   └── rate_limit.py
+│   │   ├── exceptions.py
+│   │   ├── __init__.py
+│   │   ├── policies
+│   │   │   ├── __init__.py
+│   │   │   └── rate_limit_policy.py
+│   │   └── value_objects
+│   │       ├── client_ip.py
+│   │       ├── __init__.py
+│   │       └── request_quota.py
+│   ├── infrastructure
+│   │   ├── app_logging
+│   │   │   ├── __init__.py
+│   │   │   ├── logger.py
+│   │   │   ├── mongo_event_publisher.py
+│   │   │   └── setup.py
+│   │   ├── cache
+│   │   │   ├── cache_service.py
+│   │   │   ├── __init__.py
+│   │   │   └── redis_client.py
+│   │   ├── celery
+│   │   │   ├── celery_app.py
+│   │   │   ├── dispatcher.py
+│   │   │   ├── event_publisher.py
+│   │   │   ├── __init__.py
+│   │   │   ├── sync_dispatcher.py
+│   │   │   └── tasks
+│   │   │       ├── cache_tasks.py
+│   │   │       ├── __init__.py
+│   │   │       ├── log_tasks.py
+│   │   │       ├── retry_tasks.py
+│   │   │       └── task_events.py
+│   │   ├── clients
+│   │   │   ├── http_client.py
+│   │   │   └── __init__.py
+│   │   ├── db
+│   │   │   ├── __init__.py
+│   │   │   ├── mongodb.py
+│   │   │   └── postgres.py
+│   │   ├── __init__.py
+│   │   ├── rate_limiter
+│   │   │   ├── __init__.py
+│   │   │   └── redis_rate_limiter.py
+│   │   └── tasks
+│   │       └── celery_task_reader.py
+│   ├── __init__.py
+│   ├── interfaces
+│   │   ├── api
+│   │   │   ├── __init__.py
+│   │   │   ├── router.py
+│   │   │   ├── routes
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── proxy.py
+│   │   │   │   └── tasks.py
+│   │   │   └── schemas
+│   │   │       ├── proxy.py
+│   │   │       └── tasks.py
+│   │   ├── __init__.py
+│   │   └── middleware
+│   │       ├── __init__.py
+│   │       └── rate_limiter.py
+│   ├── main.py
+│   └── utils
+│       ├── hashing.py
+│       └── __init__.py
+├── docker
+│   ├── docker-compose.yml
+│   └── Dockerfile
+├── docs
+│   ├── roadmap.md
+│   ├── states.md
+│   └── testing.md
+├── LICENSE
+├── pytest.ini
+├── README.md
+├── repository_inventory.txt
+├── requirements.txt
+└── tests
+    ├── conftest.py
+    ├── e2e
+    │   └── test_proxy_api.py
+    ├── integration
+    │   ├── cache
+    │   │   ├── __init__.py
+    │   │   └── test_redis_cache_flow.py
+    │   ├── __init__.py
+    │   ├── proxy
+    │   │   └── __init__.py
+    │   ├── rate_limit
+    │   │   ├── __init__.py
+    │   │   └── test_rate_limit_flow.py
+    │   └── tasks
+    │       ├── __init__.py
+    │       └── test_celery_task_reader.py
+    └── unit
+        ├── application
+        │   ├── caching
+        │   │   ├── __init__.py
+        │   │   ├── test_get_or_set_cache.py
+        │   │   └── test_models.py
+        │   ├── __init__.py
+        │   ├── logging
+        │   │   ├── __init__.py
+        │   │   └── test_publish_event.py
+        │   ├── proxy
+        │   │   ├── dtos
+        │   │   │   ├── __init__.py
+        │   │   │   └── test_proxy_dtos.py
+        │   │   ├── __init__.py
+        │   │   └── use_cases
+        │   │       ├── __init__.py
+        │   │       └── test_forward_proxy_request.py
+        │   ├── security
+        │   │   ├── dtos
+        │   │   │   ├── __init__.py
+        │   │   │   └── test_rate_limit_result.py
+        │   │   ├── __init__.py
+        │   │   └── use_cases
+        │   │       ├── __init__.py
+        │   │       └── test_enforce_rate_limit.py
+        │   └── tasks
+        │       ├── __init__.py
+        │       └── use_cases
+        │           ├── __init__.py
+        │           └── test_get_task_status.py
+        ├── domain
+        │   ├── events
+        │   │   ├── __init__.py
+        │   │   └── test_rate_limit.py
+        │   ├── __init__.py
+        │   ├── policies
+        │   │   ├── __init__.py
+        │   │   └── test_rate_limit_policy.py
+        │   └── value_objects
+        │       ├── __init__.py
+        │       ├── test_client_ip.py
+        │       └── test_request_quota.py
+        └── __init__.py
+
+62 directories, 127 files
+
+========== GIT STATUS ==========
+ M app/application/__init__.py
+ M app/application/caching/__init__.py
+ M app/application/caching/use_cases/__init__.py
+ M app/application/caching/use_cases/get_or_set_cache.py
+ M app/application/logging/use_cases/publish_event.py
+ M app/application/proxy/__init__.py
+ M app/application/proxy/dtos/__init__.py
+ D app/application/proxy/dtos/cache_result.py
+ M app/application/proxy/dtos/request_dto.py
+ M app/application/proxy/dtos/response_dto.py
+ M app/application/proxy/use_cases/__init__.py
+ M app/application/proxy/use_cases/forward_proxy_request.py
+ M app/application/security/__init__.py
+ M app/application/security/dtos/__init__.py
+ M app/application/security/dtos/rate_limit_result.py
+ M app/application/security/use_cases/__init__.py
+ M app/application/security/use_cases/enforce_rate_limit.py
+ M app/application/tasks/__init__.py
+ M app/application/tasks/use_cases/__init__.py
+ M app/application/tasks/use_cases/get_task_status.py
+ M app/bootstrap/container.py
+ M app/bootstrap/dummies.py
+ M app/domain/__init__.py
+ D app/domain/entities/__init__.py
+ D app/domain/entities/cached_resource.py
+ D app/domain/entities/rate_limit_state.py
+ M app/domain/events/__init__.py
+ D app/domain/events/log_event.py
+ D app/domain/events/system_events.py
+ M app/domain/exceptions.py
+ M app/domain/policies/__init__.py
+ M app/domain/policies/rate_limit_policy.py
+ D app/domain/ports/__init__.py
+ D app/domain/ports/cache_port.py
+ D app/domain/ports/event_publisher_port.py
+ D app/domain/ports/logger_port.py
+ D app/domain/ports/rate_limiter_port.py
+ D app/domain/ports/remote_resource_port.py
+ D app/domain/ports/task_dispatcher_port.py
+ D app/domain/services/__init__.py
+ D app/domain/services/cache_policy_service.py
+ D app/domain/services/rate_limit_service.py
+ M app/domain/value_objects/__init__.py
+ D app/domain/value_objects/cache_entry.py
+ M app/domain/value_objects/client_ip.py
+ M app/domain/value_objects/request_quota.py
+ M app/infrastructure/app_logging/mongo_event_publisher.py
+ M app/infrastructure/cache/cache_service.py
+ M app/infrastructure/cache/redis_client.py
+ M app/infrastructure/celery/dispatcher.py
+ M app/infrastructure/celery/event_publisher.py
+ M app/infrastructure/celery/sync_dispatcher.py
+ M app/infrastructure/celery/tasks/cache_tasks.py
+ M app/infrastructure/clients/http_client.py
+ M app/infrastructure/rate_limiter/redis_rate_limiter.py
+ M app/infrastructure/tasks/celery_task_reader.py
+ M app/interfaces/api/routes/proxy.py
+ M app/interfaces/middleware/rate_limiter.py
+ M pytest.ini
+ M tests/conftest.py
+ M tests/integration/cache/test_redis_cache_flow.py
+ D tests/integration/proxy/test_forward_proxy.py
+ M tests/integration/rate_limit/test_rate_limit_flow.py
+ D tests/unit/application/domain/test_cache_entry.py
+ D tests/unit/application/domain/test_client_ip.py
+ D tests/unit/application/domain/test_request_quota.py
+ D tests/unit/application/test_cache_use_case.py
+ D tests/unit/application/test_rate_limit_policy.py
+?? app/application/caching/models.py
+?? app/application/ports/
+?? app/domain/events/rate_limit.py
+?? repository_inventory.txt
+?? tests/integration/__init__.py
+?? tests/integration/cache/__init__.py
+?? tests/integration/proxy/__init__.py
+?? tests/integration/rate_limit/__init__.py
+?? tests/integration/tasks/
+?? tests/unit/__init__.py
+?? tests/unit/application/__init__.py
+?? tests/unit/application/caching/
+?? tests/unit/application/logging/
+?? tests/unit/application/proxy/
+?? tests/unit/application/security/
+?? tests/unit/application/tasks/
+?? tests/unit/domain/
+
+========== GIT BRANCH ==========
+FPS-4-epic-4-domain-refactoring
+
+========== LAST COMMITS ==========
+446f6f9 update git ignore
+e6c3bb6 Merge pull request #3 from Endershade98/FPS-3-epic-3-monitoring-logging
+3b09a57 fix tests
+7c2a682 ### Added - Robust HTTP client response handling (HTML + JSON fallback) - Stable proxy forwarding use case with cache integration - Domain-safe RemoteResourcePort abstraction - Cache use case with supplier-based lazy execution - E2E test covering proxy endpoint with real upstream request
+e8a6dbe Refactor proxy use case and middleware; implement logging and caching enhancements; add new schemas and tests

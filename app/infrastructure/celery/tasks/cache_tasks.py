@@ -1,8 +1,10 @@
 # app/infrastructure/celery/tasks/cache_tasks.py
 
-from app.infrastructure.celery.celery_app import celery_app
+from datetime import datetime, timezone
+
+from app.application.caching.models import CacheEntry
 from app.infrastructure.cache.redis_client import RedisClient
-from app.domain.value_objects.cache_entry import CacheEntry
+from app.infrastructure.celery.celery_app import celery_app
 
 
 @celery_app.task(
@@ -19,12 +21,16 @@ def save_cache_task(payload: dict):
     async def run():
         client = RedisClient()
 
-        await client.set(
-            CacheEntry(
-                key=payload["key"],
-                value=payload["value"],
-                ttl_seconds=payload.get("ttl", 60),
+        try:
+            await client.set(
+                CacheEntry(
+                    key=payload["key"],
+                    value=payload["value"],
+                    ttl_seconds=payload.get("ttl", 60),
+                    created_at=datetime.now(timezone.utc),
+                )
             )
-        )
+        finally:
+            await client.close()
 
     asyncio.run(run())

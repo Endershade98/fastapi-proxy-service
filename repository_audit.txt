@@ -1,0 +1,3861 @@
+==================================================
+FASTAPI PROXY SERVER - REPOSITORY AUDIT
+Generated: 2026-11-19T16:21:20+01:00
+==================================================
+
+========== REPOSITORY STRUCTURE ==========
+.
+├── app
+│   ├── application
+│   │   ├── caching
+│   │   │   ├── __init__.py
+│   │   │   ├── models.py
+│   │   │   └── use_cases
+│   │   │       ├── get_or_set_cache.py
+│   │   │       └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── logging
+│   │   │   └── use_cases
+│   │   │       └── publish_event.py
+│   │   ├── ports
+│   │   │   ├── cache.py
+│   │   │   ├── event_publisher.py
+│   │   │   ├── __init__.py
+│   │   │   ├── rate_limiter.py
+│   │   │   ├── remote_resource.py
+│   │   │   ├── task_dispatcher.py
+│   │   │   └── task_reader.py
+│   │   ├── proxy
+│   │   │   ├── dtos
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── request_dto.py
+│   │   │   │   └── response_dto.py
+│   │   │   ├── __init__.py
+│   │   │   └── use_cases
+│   │   │       ├── forward_proxy_request.py
+│   │   │       └── __init__.py
+│   │   ├── security
+│   │   │   ├── dtos
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── rate_limit_result.py
+│   │   │   ├── __init__.py
+│   │   │   └── use_cases
+│   │   │       ├── enforce_rate_limit.py
+│   │   │       └── __init__.py
+│   │   └── tasks
+│   │       ├── __init__.py
+│   │       └── use_cases
+│   │           ├── get_task_status.py
+│   │           └── __init__.py
+│   ├── bootstrap
+│   │   ├── container.py
+│   │   └── dummies.py
+│   ├── config
+│   │   └── settings.py
+│   ├── domain
+│   │   ├── events
+│   │   │   ├── __init__.py
+│   │   │   └── rate_limit.py
+│   │   ├── exceptions.py
+│   │   ├── __init__.py
+│   │   ├── policies
+│   │   │   ├── __init__.py
+│   │   │   └── rate_limit_policy.py
+│   │   └── value_objects
+│   │       ├── client_ip.py
+│   │       ├── __init__.py
+│   │       └── request_quota.py
+│   ├── infrastructure
+│   │   ├── app_logging
+│   │   │   ├── __init__.py
+│   │   │   ├── logger.py
+│   │   │   ├── mongo_event_publisher.py
+│   │   │   └── setup.py
+│   │   ├── cache
+│   │   │   ├── cache_service.py
+│   │   │   ├── __init__.py
+│   │   │   └── redis_client.py
+│   │   ├── celery
+│   │   │   ├── celery_app.py
+│   │   │   ├── dispatcher.py
+│   │   │   ├── event_publisher.py
+│   │   │   ├── __init__.py
+│   │   │   ├── sync_dispatcher.py
+│   │   │   └── tasks
+│   │   │       ├── cache_tasks.py
+│   │   │       ├── __init__.py
+│   │   │       ├── log_tasks.py
+│   │   │       ├── retry_tasks.py
+│   │   │       └── task_events.py
+│   │   ├── clients
+│   │   │   ├── http_client.py
+│   │   │   └── __init__.py
+│   │   ├── db
+│   │   │   ├── __init__.py
+│   │   │   ├── mongodb.py
+│   │   │   └── postgres.py
+│   │   ├── __init__.py
+│   │   ├── rate_limiter
+│   │   │   ├── __init__.py
+│   │   │   └── redis_rate_limiter.py
+│   │   └── tasks
+│   │       └── celery_task_reader.py
+│   ├── __init__.py
+│   ├── interfaces
+│   │   ├── api
+│   │   │   ├── __init__.py
+│   │   │   ├── router.py
+│   │   │   ├── routes
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── proxy.py
+│   │   │   │   └── tasks.py
+│   │   │   └── schemas
+│   │   │       ├── proxy.py
+│   │   │       └── tasks.py
+│   │   ├── __init__.py
+│   │   └── middleware
+│   │       ├── __init__.py
+│   │       └── rate_limiter.py
+│   ├── main.py
+│   └── utils
+│       ├── hashing.py
+│       └── __init__.py
+├── docker
+│   ├── docker-compose.yml
+│   └── Dockerfile
+├── docs
+│   ├── roadmap.md
+│   ├── states.md
+│   └── testing.md
+├── LICENSE
+├── pytest.ini
+├── README.md
+├── repository_audit.txt
+├── repository_inventory.txt
+├── requirements.txt
+└── tests
+    ├── conftest.py
+    ├── e2e
+    │   └── test_proxy_api.py
+    ├── integration
+    │   ├── cache
+    │   │   ├── __init__.py
+    │   │   └── test_redis_cache_flow.py
+    │   ├── __init__.py
+    │   ├── proxy
+    │   │   └── __init__.py
+    │   ├── rate_limit
+    │   │   ├── __init__.py
+    │   │   └── test_rate_limit_flow.py
+    │   └── tasks
+    │       ├── __init__.py
+    │       └── test_celery_task_reader.py
+    └── unit
+        ├── application
+        │   ├── caching
+        │   │   ├── __init__.py
+        │   │   ├── test_get_or_set_cache.py
+        │   │   └── test_models.py
+        │   ├── __init__.py
+        │   ├── logging
+        │   │   ├── __init__.py
+        │   │   └── test_publish_event.py
+        │   ├── proxy
+        │   │   ├── dtos
+        │   │   │   ├── __init__.py
+        │   │   │   └── test_proxy_dtos.py
+        │   │   ├── __init__.py
+        │   │   └── use_cases
+        │   │       ├── __init__.py
+        │   │       └── test_forward_proxy_request.py
+        │   ├── security
+        │   │   ├── dtos
+        │   │   │   ├── __init__.py
+        │   │   │   └── test_rate_limit_result.py
+        │   │   ├── __init__.py
+        │   │   └── use_cases
+        │   │       ├── __init__.py
+        │   │       └── test_enforce_rate_limit.py
+        │   └── tasks
+        │       ├── __init__.py
+        │       └── use_cases
+        │           ├── __init__.py
+        │           └── test_get_task_status.py
+        ├── domain
+        │   ├── events
+        │   │   ├── __init__.py
+        │   │   └── test_rate_limit.py
+        │   ├── __init__.py
+        │   ├── policies
+        │   │   ├── __init__.py
+        │   │   └── test_rate_limit_policy.py
+        │   └── value_objects
+        │       ├── __init__.py
+        │       ├── test_client_ip.py
+        │       └── test_request_quota.py
+        └── __init__.py
+
+62 directories, 128 files
+
+========== GIT STATUS ==========
+ M app/application/__init__.py
+ M app/application/caching/__init__.py
+ M app/application/caching/use_cases/__init__.py
+ M app/application/caching/use_cases/get_or_set_cache.py
+ M app/application/logging/use_cases/publish_event.py
+ M app/application/proxy/__init__.py
+ M app/application/proxy/dtos/__init__.py
+ D app/application/proxy/dtos/cache_result.py
+ M app/application/proxy/dtos/request_dto.py
+ M app/application/proxy/dtos/response_dto.py
+ M app/application/proxy/use_cases/__init__.py
+ M app/application/proxy/use_cases/forward_proxy_request.py
+ M app/application/security/__init__.py
+ M app/application/security/dtos/__init__.py
+ M app/application/security/dtos/rate_limit_result.py
+ M app/application/security/use_cases/__init__.py
+ M app/application/security/use_cases/enforce_rate_limit.py
+ M app/application/tasks/__init__.py
+ M app/application/tasks/use_cases/__init__.py
+ M app/application/tasks/use_cases/get_task_status.py
+ M app/bootstrap/container.py
+ M app/bootstrap/dummies.py
+ M app/domain/__init__.py
+ D app/domain/entities/__init__.py
+ D app/domain/entities/cached_resource.py
+ D app/domain/entities/rate_limit_state.py
+ M app/domain/events/__init__.py
+ D app/domain/events/log_event.py
+ D app/domain/events/system_events.py
+ M app/domain/exceptions.py
+ M app/domain/policies/__init__.py
+ M app/domain/policies/rate_limit_policy.py
+ D app/domain/ports/__init__.py
+ D app/domain/ports/cache_port.py
+ D app/domain/ports/event_publisher_port.py
+ D app/domain/ports/logger_port.py
+ D app/domain/ports/rate_limiter_port.py
+ D app/domain/ports/remote_resource_port.py
+ D app/domain/ports/task_dispatcher_port.py
+ D app/domain/services/__init__.py
+ D app/domain/services/cache_policy_service.py
+ D app/domain/services/rate_limit_service.py
+ M app/domain/value_objects/__init__.py
+ D app/domain/value_objects/cache_entry.py
+ M app/domain/value_objects/client_ip.py
+ M app/domain/value_objects/request_quota.py
+ M app/infrastructure/app_logging/mongo_event_publisher.py
+ M app/infrastructure/cache/cache_service.py
+ M app/infrastructure/cache/redis_client.py
+ M app/infrastructure/celery/dispatcher.py
+ M app/infrastructure/celery/event_publisher.py
+ M app/infrastructure/celery/sync_dispatcher.py
+ M app/infrastructure/celery/tasks/cache_tasks.py
+ M app/infrastructure/clients/http_client.py
+ M app/infrastructure/rate_limiter/redis_rate_limiter.py
+ M app/infrastructure/tasks/celery_task_reader.py
+ M app/interfaces/api/routes/proxy.py
+ M app/interfaces/middleware/rate_limiter.py
+ M pytest.ini
+ M tests/conftest.py
+ M tests/integration/cache/test_redis_cache_flow.py
+ D tests/integration/proxy/test_forward_proxy.py
+ M tests/integration/rate_limit/test_rate_limit_flow.py
+ D tests/unit/application/domain/test_cache_entry.py
+ D tests/unit/application/domain/test_client_ip.py
+ D tests/unit/application/domain/test_request_quota.py
+ D tests/unit/application/test_cache_use_case.py
+ D tests/unit/application/test_rate_limit_policy.py
+?? app/application/caching/models.py
+?? app/application/ports/
+?? app/domain/events/rate_limit.py
+?? repository_audit.txt
+?? repository_inventory.txt
+?? tests/integration/__init__.py
+?? tests/integration/cache/__init__.py
+?? tests/integration/proxy/__init__.py
+?? tests/integration/rate_limit/__init__.py
+?? tests/integration/tasks/
+?? tests/unit/__init__.py
+?? tests/unit/application/__init__.py
+?? tests/unit/application/caching/
+?? tests/unit/application/logging/
+?? tests/unit/application/proxy/
+?? tests/unit/application/security/
+?? tests/unit/application/tasks/
+?? tests/unit/domain/
+
+========== GIT BRANCH ==========
+FPS-4-epic-4-domain-refactoring
+
+========== GIT LAST COMMITS ==========
+446f6f9 update git ignore
+e6c3bb6 Merge pull request #3 from Endershade98/FPS-3-epic-3-monitoring-logging
+3b09a57 fix tests
+7c2a682 ### Added - Robust HTTP client response handling (HTML + JSON fallback) - Stable proxy forwarding use case with cache integration - Domain-safe RemoteResourcePort abstraction - Cache use case with supplier-based lazy execution - E2E test covering proxy endpoint with real upstream request
+e8a6dbe Refactor proxy use case and middleware; implement logging and caching enhancements; add new schemas and tests
+
+========== SOURCE AND CONFIGURATION FILES ==========
+
+
+==================================================
+FILE: app/application/caching/__init__.py
+==================================================
+from .models import CacheEntry, CacheResult
+
+__all__ = [
+    "CacheEntry",
+    "CacheResult",
+]
+
+==================================================
+FILE: app/application/caching/models.py
+==================================================
+# app/application/caching/models.py
+
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Generic, TypeVar
+
+
+T = TypeVar("T")
+
+
+@dataclass(frozen=True, slots=True)
+class CacheEntry(Generic[T]):
+    """
+    Application-level representation of a cached value.
+
+    Expiration semantics are owned by the cache adapter.
+    """
+
+    key: str
+    value: T
+    ttl_seconds: int
+    created_at: datetime
+
+    def __post_init__(self) -> None:
+        if not self.key:
+            raise ValueError("Cache key cannot be empty")
+
+        if self.ttl_seconds <= 0:
+            raise ValueError("ttl_seconds must be greater than zero")
+
+
+@dataclass(frozen=True, slots=True)
+class CacheResult(Generic[T]):
+    """
+    Result returned by the cache use case.
+    """
+
+    value: T
+    from_cache: bool
+
+==================================================
+FILE: app/application/caching/use_cases/get_or_set_cache.py
+==================================================
+# app/application/caching/use_cases/get_or_set_cache.py
+
+from datetime import datetime, timezone
+from typing import Any, Awaitable, Callable
+
+from app.application.caching.models import (
+    CacheEntry,
+    CacheResult,
+)
+from app.application.ports.cache import CachePort
+
+
+class GetOrSetCacheUseCase:
+    """
+    Application use case implementing cache-aside behavior.
+    """
+
+    def __init__(self, cache: CachePort):
+        self._cache = cache
+
+    async def execute(
+        self,
+        key: str,
+        supplier: Callable[[], Awaitable[Any]],
+        ttl_seconds: int = 60,
+    ) -> CacheResult[Any]:
+
+        cached = await self._cache.get(key)
+
+        if cached is not None:
+            return CacheResult(
+                value=cached.value,
+                from_cache=True,
+            )
+
+        value = await supplier()
+
+        entry = CacheEntry(
+            key=key,
+            value=value,
+            ttl_seconds=ttl_seconds,
+            created_at=datetime.now(timezone.utc),
+        )
+
+        await self._cache.set(entry)
+
+        return CacheResult(
+            value=value,
+            from_cache=False,
+        )
+
+==================================================
+FILE: app/application/caching/use_cases/__init__.py
+==================================================
+from .get_or_set_cache import GetOrSetCacheUseCase
+
+__all__ = [
+    "GetOrSetCacheUseCase",
+]
+
+==================================================
+FILE: app/application/__init__.py
+==================================================
+"""
+Application layer.
+
+Contains application use cases, DTOs and ports.
+
+The application layer may depend on the domain,
+but must not depend on infrastructure frameworks.
+"""
+
+==================================================
+FILE: app/application/logging/use_cases/publish_event.py
+==================================================
+# app/application/logging/use_cases/publish_event.py
+
+from dataclasses import dataclass
+from typing import Any
+
+from app.application.ports.event_publisher import EventPublisherPort
+
+
+@dataclass
+class PublishEventUseCase:
+    publisher: EventPublisherPort
+
+    async def execute(self, event: Any) -> None:
+        await self.publisher.publish(event)
+
+==================================================
+FILE: app/application/ports/cache.py
+==================================================
+# app/application/ports/cache.py
+
+from abc import ABC, abstractmethod
+
+from app.application.caching.models import CacheEntry
+
+
+class CachePort(ABC):
+    """
+    Application port for cache persistence.
+
+    Infrastructure adapters such as Redis implement this contract.
+    """
+
+    @abstractmethod
+    async def get(self, key: str) -> CacheEntry | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def set(self, entry: CacheEntry) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, key: str) -> None:
+        raise NotImplementedError
+
+==================================================
+FILE: app/application/ports/event_publisher.py
+==================================================
+# app/application/ports/event_publisher.py
+
+
+
+==================================================
+FILE: app/application/ports/__init__.py
+==================================================
+from .cache import CachePort
+from .event_publisher import EventPublisherPort
+from .rate_limiter import RateLimiterPort
+from .remote_resource import RemoteResourcePort
+from .task_dispatcher import TaskDispatcherPort
+from .task_reader import TaskReaderPort
+
+__all__ = [
+    "CachePort",
+    "EventPublisherPort",
+    "RateLimiterPort",
+    "RemoteResourcePort",
+    "TaskDispatcherPort",
+    "TaskReaderPort",
+]
+
+==================================================
+FILE: app/application/ports/rate_limiter.py
+==================================================
+# app/application/ports/rate_limiter.py
+
+from abc import ABC, abstractmethod
+
+
+class RateLimiterPort(ABC):
+    """
+    Application port for rate-limit state management.
+
+    The application knows that it can increment a counter.
+    It does not know whether the implementation uses Redis,
+    another datastore, or an in-memory mechanism.
+    """
+
+    @abstractmethod
+    async def increment(
+        self,
+        key: str,
+        window_seconds: int,
+    ) -> int:
+        raise NotImplementedError
+
+==================================================
+FILE: app/application/ports/remote_resource.py
+==================================================
+# app/application/ports/remote_resource.py
+
+from abc import ABC, abstractmethod
+from typing import Any
+
+
+class RemoteResourcePort(ABC):
+    """
+    Application port for retrieving resources from remote systems.
+
+    HTTP, external APIs and other protocols are infrastructure concerns.
+    """
+
+    @abstractmethod
+    async def fetch(self, resource: str) -> Any:
+        raise NotImplementedError
+
+==================================================
+FILE: app/application/ports/task_dispatcher.py
+==================================================
+# app/application/ports/task_dispatcher.py
+
+from abc import ABC, abstractmethod
+
+
+class TaskDispatcherPort(ABC):
+    """
+    Application port for asynchronous task dispatching.
+    """
+
+    @abstractmethod
+    async def dispatch(
+        self,
+        task: str,
+        payload: dict,
+    ) -> str:
+        raise NotImplementedError
+
+==================================================
+FILE: app/application/ports/task_reader.py
+==================================================
+# app/application/ports/task_reader.py
+
+from abc import ABC, abstractmethod
+from typing import Any
+
+
+class TaskReaderPort(ABC):
+    """
+    Application port for reading asynchronous task state.
+    """
+
+    @abstractmethod
+    def get_result(self, task_id: str) -> Any:
+        raise NotImplementedError
+
+==================================================
+FILE: app/application/proxy/dtos/__init__.py
+==================================================
+from .request_dto import ProxyRequestDTO
+from .response_dto import ProxyResponseDTO
+
+__all__ = [
+    "ProxyRequestDTO",
+    "ProxyResponseDTO",
+]
+
+==================================================
+FILE: app/application/proxy/dtos/request_dto.py
+==================================================
+# app/application/proxy/dtos/request_dto.py
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class ProxyRequestDTO:
+    url: str
+    ttl_seconds: int = 60
+
+    def __post_init__(self) -> None:
+        if not self.url:
+            raise ValueError("url is required")
+
+        if self.ttl_seconds <= 0:
+            raise ValueError(
+                "ttl_seconds must be greater than zero"
+            )
+
+==================================================
+FILE: app/application/proxy/dtos/response_dto.py
+==================================================
+# app/application/proxy/dtos/response_dto.py
+
+from dataclasses import dataclass
+from typing import Any
+
+
+@dataclass(frozen=True, slots=True)
+class ProxyResponseDTO:
+    url: str
+    data: Any
+    from_cache: bool
+
+==================================================
+FILE: app/application/proxy/__init__.py
+==================================================
+from .dtos import ProxyRequestDTO, ProxyResponseDTO
+from .use_cases import ForwardProxyRequestUseCase
+
+__all__ = [
+    "ProxyRequestDTO",
+    "ProxyResponseDTO",
+    "ForwardProxyRequestUseCase",
+]
+
+==================================================
+FILE: app/application/proxy/use_cases/forward_proxy_request.py
+==================================================
+# app/application/proxy/use_cases/forward_proxy_request.py
+
+from dataclasses import dataclass
+
+from app.application.caching.use_cases.get_or_set_cache import (
+    GetOrSetCacheUseCase,
+)
+from app.application.proxy.dtos.request_dto import ProxyRequestDTO
+from app.application.proxy.dtos.response_dto import ProxyResponseDTO
+from app.application.ports.remote_resource import RemoteResourcePort
+
+
+@dataclass
+class ForwardProxyRequestUseCase:
+    remote_resource: RemoteResourcePort
+    cache_use_case: GetOrSetCacheUseCase
+
+    async def execute(
+        self,
+        request: ProxyRequestDTO,
+    ) -> ProxyResponseDTO:
+
+        result = await self.cache_use_case.execute(
+            key=request.url,
+            ttl_seconds=request.ttl_seconds,
+            supplier=lambda: self.remote_resource.fetch(
+                request.url
+            ),
+        )
+
+        return ProxyResponseDTO(
+            url=request.url,
+            data=result.value,
+            from_cache=result.from_cache,
+        )
+
+==================================================
+FILE: app/application/proxy/use_cases/__init__.py
+==================================================
+from .forward_proxy_request import ForwardProxyRequestUseCase
+
+__all__ = [
+    "ForwardProxyRequestUseCase",
+]
+
+==================================================
+FILE: app/application/security/dtos/__init__.py
+==================================================
+from .rate_limit_result import RateLimitResult
+
+__all__ = [
+    "RateLimitResult",
+]
+
+==================================================
+FILE: app/application/security/dtos/rate_limit_result.py
+==================================================
+# app/application/security/dtos/rate_limit_result.py
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class RateLimitResult:
+    allowed: bool
+    limit: int
+    remaining: int
+    retry_after_seconds: int
+
+==================================================
+FILE: app/application/security/__init__.py
+==================================================
+from .dtos import RateLimitResult
+from .use_cases import EnforceRateLimitUseCase
+
+__all__ = [
+    "RateLimitResult",
+    "EnforceRateLimitUseCase",
+]
+
+==================================================
+FILE: app/application/security/use_cases/enforce_rate_limit.py
+==================================================
+# app/application/security/use_cases/enforce_rate_limit.py
+
+from dataclasses import dataclass
+
+from app.application.ports.rate_limiter import RateLimiterPort
+from app.application.security.dtos.rate_limit_result import (
+    RateLimitResult,
+)
+from app.domain.policies.rate_limit_policy import RateLimitPolicy
+
+
+@dataclass
+class EnforceRateLimitUseCase:
+    repository: RateLimiterPort
+    policy: RateLimitPolicy
+
+    async def execute(self, key: str) -> RateLimitResult:
+        count = await self.repository.increment(
+            key=key,
+            window_seconds=self.policy.window_seconds,
+        )
+
+        decision = self.policy.evaluate(count)
+
+        return RateLimitResult(
+            allowed=decision.allowed,
+            limit=self.policy.limit,
+            remaining=decision.remaining,
+            retry_after_seconds=decision.retry_after_seconds,
+        )
+
+==================================================
+FILE: app/application/security/use_cases/__init__.py
+==================================================
+from .enforce_rate_limit import EnforceRateLimitUseCase
+
+__all__ = [
+    "EnforceRateLimitUseCase",
+]
+
+==================================================
+FILE: app/application/tasks/__init__.py
+==================================================
+from .use_cases import (
+    GetTaskStatusUseCase,
+    TaskStatusResult,
+)
+
+__all__ = [
+    "GetTaskStatusUseCase",
+    "TaskStatusResult",
+]
+
+==================================================
+FILE: app/application/tasks/use_cases/get_task_status.py
+==================================================
+# app/application/tasks/use_cases/get_task_status.py
+
+from dataclasses import dataclass
+from typing import Any
+
+from app.application.ports.task_reader import TaskReaderPort
+
+
+@dataclass(frozen=True, slots=True)
+class TaskStatusResult:
+    task_id: str
+    status: str
+    result: Any | None
+
+
+class GetTaskStatusUseCase:
+
+    def __init__(self, task_reader: TaskReaderPort):
+        self._reader = task_reader
+
+    def execute(self, task_id: str) -> TaskStatusResult:
+        if not task_id:
+            raise ValueError("task_id is required")
+
+        task = self._reader.get_result(task_id)
+
+        status = str(task.status).lower()
+
+        return TaskStatusResult(
+            task_id=task_id,
+            status=status,
+            result=task.result if task.ready() else None,
+        )
+
+==================================================
+FILE: app/application/tasks/use_cases/__init__.py
+==================================================
+from .get_task_status import (
+    GetTaskStatusUseCase,
+    TaskStatusResult,
+)
+
+__all__ = [
+    "GetTaskStatusUseCase",
+    "TaskStatusResult",
+]
+
+==================================================
+FILE: app/bootstrap/container.py
+==================================================
+# app/bootstrap/container.py
+
+from functools import lru_cache
+
+from app.application.caching.use_cases.get_or_set_cache import (
+    GetOrSetCacheUseCase,
+)
+from app.application.proxy.use_cases.forward_proxy_request import (
+    ForwardProxyRequestUseCase,
+)
+from app.application.security.use_cases.enforce_rate_limit import (
+    EnforceRateLimitUseCase,
+)
+from app.application.tasks.use_cases.get_task_status import (
+    GetTaskStatusUseCase,
+)
+
+from app.config.settings import settings
+
+from app.domain.policies.rate_limit_policy import (
+    RateLimitPolicy,
+)
+from app.domain.value_objects.request_quota import (
+    RequestQuota,
+)
+
+from app.infrastructure.cache.cache_service import (
+    CacheService,
+)
+from app.infrastructure.cache.redis_client import (
+    RedisClient,
+)
+from app.infrastructure.celery.celery_app import (
+    celery_app,
+)
+from app.infrastructure.celery.event_publisher import (
+    CeleryEventPublisher,
+)
+from app.infrastructure.clients.http_client import (
+    HttpClient,
+)
+from app.infrastructure.rate_limiter.redis_rate_limiter import (
+    RedisRateLimiter,
+)
+from app.infrastructure.tasks.celery_task_reader import (
+    CeleryTaskReader,
+)
+
+
+@lru_cache
+def get_redis_client() -> RedisClient:
+    return RedisClient()
+
+
+@lru_cache
+def get_cache_service() -> CacheService:
+    return CacheService(
+        redis=get_redis_client(),
+    )
+
+
+@lru_cache
+def get_http_client() -> HttpClient:
+    return HttpClient()
+
+
+@lru_cache
+def get_rate_limiter_repository() -> RedisRateLimiter:
+    return RedisRateLimiter(
+        redis_client=get_redis_client(),
+    )
+
+
+@lru_cache
+def get_rate_limit_policy() -> RateLimitPolicy:
+    return RateLimitPolicy(
+        RequestQuota(
+            limit=settings.RATE_LIMIT_REQUESTS,
+            window_seconds=settings.RATE_LIMIT_WINDOW,
+        )
+    )
+
+
+@lru_cache
+def get_task_reader() -> CeleryTaskReader:
+    return CeleryTaskReader(
+        celery_app,
+    )
+
+
+@lru_cache
+def get_event_publisher() -> CeleryEventPublisher:
+    return CeleryEventPublisher()
+
+
+def get_cache_use_case() -> GetOrSetCacheUseCase:
+    return GetOrSetCacheUseCase(
+        cache=get_cache_service(),
+    )
+
+
+def get_forward_proxy_use_case() -> ForwardProxyRequestUseCase:
+    return ForwardProxyRequestUseCase(
+        remote_resource=get_http_client(),
+        cache_use_case=get_cache_use_case(),
+    )
+
+
+def get_rate_limit_use_case() -> EnforceRateLimitUseCase:
+    return EnforceRateLimitUseCase(
+        repository=get_rate_limiter_repository(),
+        policy=get_rate_limit_policy(),
+    )
+
+
+def get_task_status_use_case() -> GetTaskStatusUseCase:
+    return GetTaskStatusUseCase(
+        task_reader=get_task_reader(),
+    )
+
+==================================================
+FILE: app/bootstrap/dummies.py
+==================================================
+# app/bootstrap/dummies.py
+
+from app.application.ports.event_publisher import (
+    EventPublisherPort,
+)
+from app.application.ports.rate_limiter import (
+    RateLimiterPort,
+)
+
+
+class DummyRateLimiter(RateLimiterPort):
+
+    async def increment(
+        self,
+        key: str,
+        window_seconds: int,
+    ) -> int:
+        return 0
+
+
+class DummyEventPublisher(EventPublisherPort):
+
+    async def publish(self, event) -> None:
+        return None
+
+==================================================
+FILE: app/config/settings.py
+==================================================
+# app/config/settings.py
+
+import os 
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    # REDIS SETTINGS
+    REDIS_PORT: int = os.getenv("REDIS_PORT", 6379)
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
+    REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+
+    # CELERY
+    USE_CELERY: bool = (os.getenv("USE_CELERY", "True").lower() in ("true", "1", "t"))
+    CELERY_BROKER_URL: str = REDIS_URL
+    CELERY_RESULT_BACKEND: str = REDIS_URL
+    RATE_LIMIT_REQUESTS: int = 100
+    RATE_LIMIT_WINDOW: int = 60  # in seconds
+
+    # MONGO SETTINGS
+    MONGO_DATABASE_NAME: str = os.getenv("MONGO_DATABASE_NAME", "fastapi_proxy_mongo_db")
+    MONGO_DATABASE_PORT: int = os.getenv("MONGO_DATABASE_PORT", 27017)
+    MONGO_DATABASE_HOST: str = os.getenv("MONGO_DATABASE_HOST", "localhost")
+    MONGO_DATABASE_USER: str = os.getenv("MONGO_DATABASE_USER", "proxy_user")
+    MONGO_DATABASE_PASSWORD: str = os.getenv("MONGO_DATABASE_PASSWORD", "proxy_password")
+    MONGO_URI: str = f"mongodb://{MONGO_DATABASE_USER}:{MONGO_DATABASE_PASSWORD}@{MONGO_DATABASE_HOST}:{MONGO_DATABASE_PORT}/{MONGO_DATABASE_NAME}"
+    
+    # POSTGRES SETTINGS
+    POSTGRES_DATABASE_NAME: str = os.getenv("POSTGRES_DATABASE_NAME", "fastapi_proxy_postgres_db")
+    POSTGRES_DATABASE_PORT: int = os.getenv("POSTGRES_DATABASE_PORT", 5432)
+    POSTGRES_DATABASE_HOST: str = os.getenv("POSTGRES_DATABASE_HOST", "localhost")
+    POSTGRES_DATABASE_USER: str = os.getenv("POSTGRES_DATABASE_USER", "proxy_user")
+    POSTGRES_DATABASE_PASSWORD: str = os.getenv("POSTGRES_DATABASE_PASSWORD", "proxy_password")
+
+    # DEBUG
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
+
+    # SECRETS
+    KEY_SECRET: str = os.getenv("KEY_SECRET", "default_secret_key")
+
+settings = Settings()
+
+==================================================
+FILE: app/domain/events/__init__.py
+==================================================
+from .rate_limit import RateLimitExceeded
+
+__all__ = [
+    "RateLimitExceeded",
+]
+
+==================================================
+FILE: app/domain/events/rate_limit.py
+==================================================
+# app/domain/events/rate_limit.py
+
+from dataclasses import dataclass
+from datetime import datetime
+
+from app.domain.value_objects.client_ip import ClientIP
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+@dataclass(frozen=True, slots=True)
+class RateLimitExceeded:
+    """
+    Domain event raised when a request exceeds the configured quota.
+    """
+
+    client_ip: ClientIP
+    quota: RequestQuota
+    occurred_at: datetime
+
+==================================================
+FILE: app/domain/exceptions.py
+==================================================
+# app/domain/exceptions.py
+
+class DomainException(Exception):
+    """Base exception for all domain errors."""
+
+
+class InvalidIPError(DomainException):
+    def __init__(self, ip: str):
+        super().__init__(f"Invalid IP address: {ip}")
+
+
+class InvalidQuotaError(DomainException):
+    def __init__(self):
+        super().__init__(
+            "Quota values must be greater than zero"
+        )
+
+==================================================
+FILE: app/domain/__init__.py
+==================================================
+"""
+Domain layer.
+
+Contains business rules, value objects, policies and domain events.
+
+This package must not depend on infrastructure frameworks
+such as FastAPI, Redis, Celery, MongoDB, SQLAlchemy or httpx.
+"""
+
+==================================================
+FILE: app/domain/policies/__init__.py
+==================================================
+from .rate_limit_policy import (
+    RateLimitDecision,
+    RateLimitPolicy,
+)
+
+__all__ = [
+    "RateLimitDecision",
+    "RateLimitPolicy",
+]
+
+==================================================
+FILE: app/domain/policies/rate_limit_policy.py
+==================================================
+# app/domain/policies/rate_limit_policy.py
+
+from dataclasses import dataclass
+
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+@dataclass(frozen=True, slots=True)
+class RateLimitDecision:
+    """
+    Result of evaluating the current rate-limit state.
+    """
+
+    allowed: bool
+    remaining: int
+    retry_after_seconds: int
+
+
+class RateLimitPolicy:
+    """
+    Domain policy responsible for deciding whether a request
+    is allowed according to a RequestQuota.
+    """
+
+    def __init__(self, quota: RequestQuota):
+        self._quota = quota
+
+    def evaluate(self, current_count: int) -> RateLimitDecision:
+        if current_count < 0:
+            raise ValueError(
+                "current_count cannot be negative"
+            )
+
+        allowed = current_count <= self._quota.limit
+
+        remaining = max(
+            self._quota.limit - current_count,
+            0,
+        )
+
+        retry_after_seconds = (
+            0
+            if allowed
+            else self._quota.window_seconds
+        )
+
+        return RateLimitDecision(
+            allowed=allowed,
+            remaining=remaining,
+            retry_after_seconds=retry_after_seconds,
+        )
+
+    @property
+    def limit(self) -> int:
+        return self._quota.limit
+
+    @property
+    def window_seconds(self) -> int:
+        return self._quota.window_seconds
+
+==================================================
+FILE: app/domain/value_objects/client_ip.py
+==================================================
+# app/domain/value_objects/client_ip.py
+
+import ipaddress
+from dataclasses import dataclass
+
+from app.domain.exceptions import InvalidIPError
+
+
+@dataclass(frozen=True, slots=True)
+class ClientIP:
+    """
+    Value Object representing a normalized client IP address.
+
+    The object guarantees that the contained value is a valid
+    IPv4 or IPv6 address.
+    """
+
+    value: str
+
+    def __post_init__(self) -> None:
+        try:
+            normalized = str(ipaddress.ip_address(self.value))
+        except ValueError as exc:
+            raise InvalidIPError(self.value) from exc
+
+        object.__setattr__(self, "value", normalized)
+
+    def __str__(self) -> str:
+        return self.value
+
+==================================================
+FILE: app/domain/value_objects/__init__.py
+==================================================
+from .client_ip import ClientIP
+from .request_quota import RequestQuota
+
+__all__ = [
+    "ClientIP",
+    "RequestQuota",
+]
+
+==================================================
+FILE: app/domain/value_objects/request_quota.py
+==================================================
+# app/domain/value_objects/request_quota.py
+
+from dataclasses import dataclass
+
+from app.domain.exceptions import InvalidQuotaError
+
+
+@dataclass(frozen=True, slots=True)
+class RequestQuota:
+    """
+    Value Object defining a request rate limit.
+    """
+
+    limit: int
+    window_seconds: int
+
+    def __post_init__(self) -> None:
+        if self.limit <= 0 or self.window_seconds <= 0:
+            raise InvalidQuotaError()
+
+==================================================
+FILE: app/infrastructure/app_logging/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/app_logging/logger.py
+==================================================
+# app/infrastructure/logging/logger.py
+
+==================================================
+FILE: app/infrastructure/app_logging/mongo_event_publisher.py
+==================================================
+# app/infrastructure/app_logging/mongo_event_publisher.py
+
+from app.application.ports.event_publisher import EventPublisherPort
+from app.domain.events.rate_limit import RateLimitExceeded
+from app.infrastructure.db.mongodb import get_logs_collection
+
+
+class MongoEventPublisher(EventPublisherPort):
+    async def publish(self, event) -> None:
+        collection = get_logs_collection()
+
+        if isinstance(event, RateLimitExceeded):
+            await collection.insert_one(
+                {
+                    "event_type": "RateLimitExceeded",
+                    "client_ip": str(event.client_ip),
+                    "limit": event.quota.limit,
+                    "window_seconds": event.quota.window_seconds,
+                    "occurred_at": event.occurred_at,
+                }
+            )
+
+==================================================
+FILE: app/infrastructure/app_logging/setup.py
+==================================================
+# app/infrastructure/logging/setup.py
+
+import logging
+
+logger = logging.getLogger("app")
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)
+
+==================================================
+FILE: app/infrastructure/cache/cache_service.py
+==================================================
+# app/infrastructure/cache/cache_service.py
+
+from app.application.caching.models import CacheEntry
+from app.application.ports.cache import CachePort
+from app.infrastructure.cache.redis_client import RedisClient
+
+
+class CacheService(CachePort):
+
+    def __init__(self, redis: RedisClient):
+        self._redis = redis
+
+    async def get(self, key: str) -> CacheEntry | None:
+        return await self._redis.get(key)
+
+    async def set(self, entry: CacheEntry) -> None:
+        await self._redis.set(entry)
+
+    async def delete(self, key: str) -> None:
+        await self._redis.delete(key)
+
+==================================================
+FILE: app/infrastructure/cache/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/cache/redis_client.py
+==================================================
+# app/infrastructure/cache/redis_client.py
+
+import json
+from datetime import datetime
+
+import redis.asyncio as redis
+
+from app.application.caching.models import CacheEntry
+from app.config.settings import settings
+
+
+class RedisClient:
+
+    def __init__(self):
+        self.redis = redis.from_url(settings.REDIS_URL)
+
+    async def get(self, key: str) -> CacheEntry | None:
+        raw = await self.redis.get(key)
+
+        if raw is None:
+            return None
+
+        try:
+            data = json.loads(raw)
+
+            return CacheEntry(
+                key=key,
+                value=data["value"],
+                ttl_seconds=data["ttl"],
+                created_at=datetime.fromisoformat(
+                    data["created_at"]
+                ),
+            )
+
+        except (KeyError, ValueError, TypeError):
+            return None
+
+    async def get_ttl(self, key: str) -> int | None:
+        ttl = await self.redis.ttl(key)
+        return ttl if ttl >= 0 else None
+
+    async def set(self, entry: CacheEntry) -> None:
+        payload = {
+            "value": entry.value,
+            "ttl": entry.ttl_seconds,
+            "created_at": entry.created_at.isoformat(),
+        }
+
+        await self.redis.set(
+            entry.key,
+            json.dumps(payload),
+            ex=entry.ttl_seconds,
+        )
+
+    async def incr(self, key: str) -> int:
+        return await self.redis.incr(key)
+
+    async def expire(self, key: str, seconds: int) -> None:
+        await self.redis.expire(key, seconds)
+
+    async def delete(self, key: str) -> None:
+        await self.redis.delete(key)
+
+    async def close(self) -> None:
+        await self.redis.close()
+
+==================================================
+FILE: app/infrastructure/celery/celery_app.py
+==================================================
+# app/infrastructure/celery/celery_app.py
+
+from celery import Celery
+from app.config.settings import settings
+
+celery_app = Celery(
+    "proxy_tasks",
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL
+)
+
+celery_app.conf.update(
+    task_serializer="json",
+    result_serializer="json",
+    accept_content=["json"],
+    timezone="UTC",
+    enable_utc=True,
+)
+
+==================================================
+FILE: app/infrastructure/celery/dispatcher.py
+==================================================
+# app/infrastructure/celery/dispatcher.py
+
+from app.application.ports.task_dispatcher import (
+    TaskDispatcherPort,
+)
+
+
+class CeleryTaskDispatcher(TaskDispatcherPort):
+
+    def __init__(self, task_router):
+        self._task_router = task_router
+
+    async def dispatch(
+        self,
+        task: str,
+        payload: dict,
+    ) -> str:
+
+        result = self._task_router.delay(
+            task,
+            payload,
+        )
+
+        return result.id
+
+==================================================
+FILE: app/infrastructure/celery/event_publisher.py
+==================================================
+# app/infrastructure/celery/event_publisher.py
+
+from app.application.ports.event_publisher import (
+    EventPublisherPort,
+)
+from app.infrastructure.celery.tasks.log_tasks import (
+    log_event_task,
+)
+
+
+class CeleryEventPublisher(EventPublisherPort):
+
+    async def publish(self, event) -> None:
+        payload = {
+            "event_type": event.__class__.__name__,
+            "data": self._serialize_event(event),
+        }
+
+        log_event_task.delay(payload)
+
+    @staticmethod
+    def _serialize_event(event) -> dict:
+        data = {}
+
+        for key, value in vars(event).items():
+            if hasattr(value, "value"):
+                data[key] = value.value
+            elif hasattr(value, "isoformat"):
+                data[key] = value.isoformat()
+            elif hasattr(value, "__dict__"):
+                data[key] = str(value)
+            else:
+                data[key] = value
+
+        return data
+
+==================================================
+FILE: app/infrastructure/celery/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/celery/sync_dispatcher.py
+==================================================
+# app/infrastructure/celery/sync_dispatcher.py
+
+import uuid
+
+from app.application.ports.task_dispatcher import (
+    TaskDispatcherPort,
+)
+
+
+class SyncTaskDispatcher(TaskDispatcherPort):
+
+    async def dispatch(
+        self,
+        task: str,
+        payload: dict,
+    ) -> str:
+
+        return str(uuid.uuid4())
+
+==================================================
+FILE: app/infrastructure/celery/tasks/cache_tasks.py
+==================================================
+# app/infrastructure/celery/tasks/cache_tasks.py
+
+from datetime import datetime, timezone
+
+from app.application.caching.models import CacheEntry
+from app.infrastructure.cache.redis_client import RedisClient
+from app.infrastructure.celery.celery_app import celery_app
+
+
+@celery_app.task(
+    name="save_cache",
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_jitter=True,
+    max_retries=5,
+)
+def save_cache_task(payload: dict):
+
+    import asyncio
+
+    async def run():
+        client = RedisClient()
+
+        try:
+            await client.set(
+                CacheEntry(
+                    key=payload["key"],
+                    value=payload["value"],
+                    ttl_seconds=payload.get("ttl", 60),
+                    created_at=datetime.now(timezone.utc),
+                )
+            )
+        finally:
+            await client.close()
+
+    asyncio.run(run())
+
+==================================================
+FILE: app/infrastructure/celery/tasks/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/celery/tasks/log_tasks.py
+==================================================
+# app/infrastructure/celery/tasks/log_tasks.py
+
+import asyncio
+from datetime import datetime, timezone
+
+from app.infrastructure.celery.celery_app import celery_app
+from app.infrastructure.db.mongodb import get_mongo
+
+
+@celery_app.task(name="log_event_task")
+def log_event_task(payload: dict):
+
+    async def run():
+        mongo = get_mongo()
+
+        collection = mongo.get_collection("system_events")
+
+        await collection.insert_one({
+            "payload": payload,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+
+    asyncio.run(run())
+
+==================================================
+FILE: app/infrastructure/celery/tasks/retry_tasks.py
+==================================================
+# app/infrastructure/celery/tasks/retry_tasks.py
+
+from app.infrastructure.celery.celery_app import celery_app
+from app.infrastructure.clients.http_client import HttpClient
+
+
+@celery_app.task(
+    name="retry_proxy_request",
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_jitter=True,
+    max_retries=5,
+)
+def retry_proxy_request_task(url: str):
+
+    import asyncio
+
+    async def run():
+        client = HttpClient()
+        return await client.fetch(url)
+
+    return asyncio.run(run())
+
+==================================================
+FILE: app/infrastructure/celery/tasks/task_events.py
+==================================================
+# app/infrastructure/celery/tasks/task_events.py
+
+from app.infrastructure.celery.celery_app import celery_app
+from app.infrastructure.db.mongodb import get_mongo
+from datetime import datetime, timezone
+
+
+async def _write(event: dict):
+    mongo = get_mongo()
+    await mongo.get_collection("task_events").insert_one(event)
+
+
+@celery_app.task(name="task_event_received")
+def task_received(task_id: str):
+    import asyncio
+    asyncio.run(_write({
+        "task_id": task_id,
+        "event": "RECEIVED",
+        "ts": datetime.now(timezone.utc).isoformat()
+    }))
+
+
+@celery_app.task(name="task_event_started")
+def task_started(task_id: str):
+    import asyncio
+    asyncio.run(_write({
+        "task_id": task_id,
+        "event": "STARTED",
+        "ts": datetime.now(timezone.utc).isoformat()
+    }))
+
+
+@celery_app.task(name="task_event_succeeded")
+def task_succeeded(task_id: str):
+    import asyncio
+    asyncio.run(_write({
+        "task_id": task_id,
+        "event": "SUCCEEDED",
+        "ts": datetime.now(timezone.utc).isoformat()
+    }))
+
+
+@celery_app.task(name="task_event_failed")
+def task_failed(task_id: str, error: str):
+    import asyncio
+    asyncio.run(_write({
+        "task_id": task_id,
+        "event": "FAILED",
+        "error": error,
+        "ts": datetime.now(timezone.utc).isoformat()
+    }))
+
+==================================================
+FILE: app/infrastructure/clients/http_client.py
+==================================================
+# app/infrastructure/clients/http_client.py
+
+import httpx
+
+from app.application.ports.remote_resource import (
+    RemoteResourcePort,
+)
+
+
+class HttpClient(RemoteResourcePort):
+
+    def __init__(
+        self,
+        client: httpx.AsyncClient | None = None,
+    ):
+        self._client = client or httpx.AsyncClient(
+            timeout=3
+        )
+
+    async def fetch(self, url: str):
+        response = await self._client.get(url)
+
+        response.raise_for_status()
+
+        content_type = response.headers.get(
+            "content-type",
+            "",
+        )
+
+        if "application/json" in content_type:
+            return response.json()
+
+        return response.text
+
+    async def close(self) -> None:
+        await self._client.aclose()
+
+==================================================
+FILE: app/infrastructure/clients/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/db/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/db/mongodb.py
+==================================================
+# app/infrastructure/db/mongodb.py
+
+from motor.motor_asyncio import AsyncIOMotorClient
+from app.config.settings import settings
+
+
+class MongoDB:
+    """
+    Infrastructure DB wrapper.
+    No business logic here (DDD compliance).
+    """
+
+    def __init__(self, client: AsyncIOMotorClient, db_name: str):
+        self.client = client
+        self.db = self.client[db_name]
+
+    def get_collection(self, name: str):
+        return self.db[name]
+
+
+# ---- Factory ----
+
+_client: AsyncIOMotorClient | None = None
+_db: MongoDB | None = None
+
+
+def build_mongo_client() -> AsyncIOMotorClient:
+    return AsyncIOMotorClient(settings.MONGO_URI)
+
+
+def get_mongo() -> MongoDB:
+    """
+    Singleton-style accessor (safe for FastAPI DI usage).
+    """
+    global _client, _db
+
+    if _db is None:
+        _client = build_mongo_client()
+        _db = MongoDB(client=_client, db_name=settings.MONGO_DATABASE_NAME)
+
+    return _db
+
+
+# ✅ FIX CRITICO: elimina import circolare
+# invece di "get_logs_collection" esposto qui,
+# la collection viene risolta nel layer logging (DDD correct)
+def get_logs_collection():
+    """
+    Thin helper used by infrastructure logging layer.
+    Avoid importing Celery or logger here (NO dependency inversion violation).
+    """
+    return get_mongo().get_collection("request_logs")
+
+==================================================
+FILE: app/infrastructure/db/postgres.py
+==================================================
+# app/infrastructure/db/postgres.py
+
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from app.config.settings import settings
+
+DATABASE_URL = f"postgresql+asyncpg://{settings.POSTGRES_DATABASE_USER}:{settings.POSTGRES_DATABASE_PASSWORD}@{settings.POSTGRES_DATABASE_HOST}:{settings.POSTGRES_DATABASE_PORT}/{settings.POSTGRES_DATABASE_NAME}"
+
+engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+
+async_session = sessionmaker(
+    engine, expire_on_commit=False, class_=AsyncSession
+)
+
+# Dependency for FastAPI
+async def get_db():
+    async with async_session() as session:
+        yield session
+
+==================================================
+FILE: app/infrastructure/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/rate_limiter/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/infrastructure/rate_limiter/redis_rate_limiter.py
+==================================================
+# app/infrastructure/rate_limiter/redis_rate_limiter.py
+
+from app.application.ports.rate_limiter import RateLimiterPort
+
+
+class RedisRateLimiter(RateLimiterPort):
+
+    def __init__(self, redis_client):
+        self._redis = redis_client
+
+    async def increment(
+        self,
+        key: str,
+        window_seconds: int,
+    ) -> int:
+
+        count = await self._redis.incr(key)
+
+        if count == 1:
+            await self._redis.expire(
+                key,
+                window_seconds,
+            )
+
+        return count
+
+==================================================
+FILE: app/infrastructure/tasks/celery_task_reader.py
+==================================================
+# app/infrastructure/tasks/celery_task_reader.py
+
+from celery.result import AsyncResult
+
+from app.application.ports.task_reader import TaskReaderPort
+
+
+class CeleryTaskReader(TaskReaderPort):
+
+    def __init__(self, celery_app):
+        self._celery_app = celery_app
+
+    def get_result(self, task_id: str):
+        return AsyncResult(
+            task_id,
+            app=self._celery_app,
+        )
+
+==================================================
+FILE: app/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/interfaces/api/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/interfaces/api/router.py
+==================================================
+# app/interfaces/api/router.py
+
+from fastapi import APIRouter
+from app.interfaces.api.routes import proxy
+from app.interfaces.api.routes import tasks
+
+router = APIRouter()
+
+# REGISTER ROUTES
+router.include_router(proxy.router, prefix="/proxy", tags=["proxy"])
+router.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
+
+==================================================
+FILE: app/interfaces/api/routes/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/interfaces/api/routes/proxy.py
+==================================================
+# app/interfaces/api/routes/proxy.py
+
+from fastapi import APIRouter, Depends
+
+from app.application.proxy.dtos.request_dto import (
+    ProxyRequestDTO,
+)
+from app.application.proxy.use_cases.forward_proxy_request import (
+    ForwardProxyRequestUseCase,
+)
+from app.bootstrap.container import (
+    get_forward_proxy_use_case,
+)
+from app.interfaces.api.schemas.proxy import (
+    ProxyPayloadSchema,
+    ProxyResponseSchema,
+)
+
+
+router = APIRouter()
+
+
+@router.post(
+    "/",
+    response_model=ProxyResponseSchema,
+)
+async def proxy_endpoint(
+    payload: ProxyPayloadSchema,
+    use_case: ForwardProxyRequestUseCase = Depends(
+        get_forward_proxy_use_case
+    ),
+):
+    request = ProxyRequestDTO(
+        url=str(payload.url),
+        ttl_seconds=payload.ttl,
+    )
+
+    result = await use_case.execute(request)
+
+    return ProxyResponseSchema.from_result(result)
+
+==================================================
+FILE: app/interfaces/api/routes/tasks.py
+==================================================
+# app/interfaces/api/routes/tasks.py
+
+from fastapi import APIRouter, Depends
+
+from app.bootstrap.container import get_task_status_use_case
+from app.application.tasks.use_cases.get_task_status import GetTaskStatusUseCase
+from app.interfaces.api.schemas.tasks import TaskStatusResponseSchema
+
+router = APIRouter()
+
+
+@router.get("/{task_id}", response_model=TaskStatusResponseSchema)
+def task_status(
+    task_id: str,
+    use_case: GetTaskStatusUseCase = Depends(get_task_status_use_case)
+):
+    result = use_case.execute(task_id)
+
+    return TaskStatusResponseSchema.from_result(result)
+
+==================================================
+FILE: app/interfaces/api/schemas/proxy.py
+==================================================
+# app/interfaces/api/schemas/proxy.py
+
+from pydantic import BaseModel, HttpUrl
+from typing import Any
+
+from pydantic import (
+    BaseModel,
+    HttpUrl,
+    Field,
+)
+
+
+class ProxyPayloadSchema(BaseModel):
+
+    url: HttpUrl
+
+    ttl: int = Field(
+        default=60,
+        gt=0,
+        le=86400,
+    )
+
+class ProxyResponseSchema(BaseModel):
+    url: str
+    data: Any
+    from_cache: bool
+
+    @classmethod
+    def from_result(cls, result):
+        return cls(
+            url=result.url,
+            data=result.data,
+            from_cache=result.from_cache
+        )
+
+==================================================
+FILE: app/interfaces/api/schemas/tasks.py
+==================================================
+# app/interfaces/api/schemas/tasks.py
+
+from pydantic import BaseModel
+from typing import Any
+
+
+class TaskStatusResponseSchema(BaseModel):
+    task_id: str
+    status: str
+    result: Any | None
+
+    @classmethod
+    def from_result(cls, result):
+        return cls(
+            task_id=result.task_id,
+            status=result.status,
+            result=result.result
+        )
+
+==================================================
+FILE: app/interfaces/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/interfaces/middleware/__init__.py
+==================================================
+
+
+==================================================
+FILE: app/interfaces/middleware/rate_limiter.py
+==================================================
+
+
+==================================================
+FILE: app/main.py
+==================================================
+# app/main.py
+
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+
+from app.bootstrap.container import get_rate_limit_use_case, get_event_publisher
+from app.interfaces.middleware.rate_limiter import RateLimiterMiddleware
+from app.interfaces.api.router import router
+from app.bootstrap.dummies import DummyEventPublisher
+from app.infrastructure.cache.redis_client import RedisClient
+
+
+def create_app(testing: bool = False):
+
+    redis_client = RedisClient()
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        yield
+        # CLEAN SHUTDOWN
+        try:
+            await redis_client.close()
+        except Exception:
+            pass
+
+    app = FastAPI(lifespan=lifespan)
+
+    rate_limit_use_case = get_rate_limit_use_case()
+
+    publisher = DummyEventPublisher() if testing else get_event_publisher()
+
+    app.add_middleware(
+        RateLimiterMiddleware,
+        rate_limit_use_case=rate_limit_use_case,
+        publisher=publisher,
+    )
+
+    app.include_router(router)
+
+    return app
+
+==================================================
+FILE: app/utils/hashing.py
+==================================================
+# app/utils/hashing.py
+
+==================================================
+FILE: app/utils/__init__.py
+==================================================
+
+
+==================================================
+FILE: docker/docker-compose.yml
+==================================================
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: proxy_server
+    restart: always
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  redis:
+    image: redis:7-alpine
+    container_name: proxy_redis
+    ports:
+      - "${REDIS_PORT}:6379"
+
+  celery:
+    build: .
+    container_name: proxy_celery
+    command: celery -A app.infrastructure.celery.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+      - postgres
+    env_file: .env
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: proxy_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+==================================================
+FILE: docker/Dockerfile
+==================================================
+# Use official Python image
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for caching
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Expose FastAPI port
+EXPOSE 8000
+
+# Run FastAPI with uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+==================================================
+FILE: docs/roadmap.md
+==================================================
+# Project Roadmap – FastAPI Proxy (DDD + Clean Architecture)
+
+---
+
+## Epic 1: Core Proxy Engine (Domain & Application Layer) ✅ COMPLETATA
+
+Obiettivo: Costruire il motore core del proxy secondo principi DDD e Clean Architecture, separando logica di dominio, orchestrazione e interfacce concrete.
+
+- Task 1.1: Implementare gestione cache (hit/miss, TTL, serializzazione sicura) nel layer Adapter
+- Task 1.2: Gestire forward request con retry/backoff nel layer Application
+- Task 1.3: Implementare parsing sicuro JSON/text con gestione fallback
+- Task 1.4: Gestione eccezioni centralizzata (UpstreamTimeoutError, UpstreamServiceError) come entità di dominio
+- Task 1.5: Introduzione delle entity e value objects per Request/Response, TTL e stato richiesta
+- Task 1.6: Isolamento logica di dominio dal framework (FastAPI) per testabilità
+
+---
+
+## Epic 2: Rate Limiting e Security (Interface + Domain Layer)
+
+Obiettivo: Gestire sicurezza e limitazioni request separando enforcement, policy e observability.
+
+- Task 2.1: Middleware per rate limiting per IP con Redis (enforcement veloce e stateless)
+- Task 2.2: Logging strutturato delle richieste rilevanti su MongoDB (solo eventi: rate limit, errori, anomalie)
+- Task 2.3: Implementazione opzionale API Key / JWT con persistenza su PostgreSQL
+- Task 2.4: Introduzione di Value Object nel domain:
+  - ClientIP (validazione e normalizzazione IP)
+  - RequestQuota (limite + finestra temporale)
+- Task 2.5: Introduzione Domain Service RateLimitPolicy per separare logica di decisione dal middleware
+
+---
+
+## Epic 3: Asynchronous Processing & Celery Integration (Infrastructure & Application Layer)
+
+Obiettivo: Scalare operazioni lente o non critiche senza bloccare il ciclo HTTP principale.
+
+- Task 3.1: Creare worker Celery per gestione asincrona
+- Task 3.2: Spostare il salvataggio cache post-forwarding in task async
+- Task 3.3: Gestire retry HTTP asincrono con backoff tramite Celery
+- Task 3.4: Notifiche/alerting asincrone su errori critici
+- Task 3.5: Tracciamento stato task Celery (Pending → Started → Success/Failure)
+- Task 3.6: Logging asincrono su MongoDB tramite Celery (decoupling completo dal request cycle)
+
+---
+
+## Epic 4: Monitoring & Logging (Cross-Cutting)
+
+Obiettivo: Avere osservabilità completa su comportamento del sistema.
+
+- Task 4.1: Logging strutturato con livelli INFO/WARN/ERROR/DEBUG
+- Task 4.2: Tracciamento cache HIT/MISS e performance richieste
+- Task 4.3: Integrazione con Prometheus/Grafana per metriche runtime
+- Task 4.4: Alerting su errori critici, timeout e spike di traffico
+- Task 4.5: Centralizzazione log su MongoDB (collections: request_logs, rate_limits, errors)
+- Task 4.6: Query analytics su MongoDB:
+  - top IP
+  - endpoint più utilizzati
+  - percentuale cache hit/miss
+  - frequenza rate limiting
+
+---
+
+## Epic 5: Testing & CI/CD (Application & Infrastructure Layer)
+
+Obiettivo: Garantire qualità, stabilità e sicurezza del codice.
+
+- Task 5.1: Unit test per ProxyService e CacheService (mocking HTTP e Redis)
+- Task 5.2: Integration test endpoint /proxy con cache e retry
+- Task 5.3: End-to-end test completo (cache + retry + rate limiting + Celery)
+- Task 5.4: Pipeline CI/CD con lint, security checks e coverage
+- Task 5.5: Test resilienza Celery worker (retry, failure handling)
+- Task 5.6: Test logging MongoDB (mock repository, no DB reale)
+
+---
+
+## Epic 6: Performance & Scalability (Infrastructure Layer)
+
+Obiettivo: Ottimizzare throughput, latenza e resilienza del sistema.
+
+- Task 6.1: Ottimizzazione client HTTP async (httpx pooling, timeout)
+- Task 6.2: Configurazione Redis cluster per cache distribuita
+- Task 6.3: Ottimizzazione timeout e strategie di backoff
+- Task 6.4: Benchmark e stress test pipeline async (Celery)
+- Task 6.5: Introduzione circuit breaker / bulkhead pattern per resilienza upstream
+- Task 6.6: Ottimizzazione scrittura MongoDB (batch insert, async logging)
+
+---
+
+## Architettura Tecnologica (Sintesi)
+
+- FastAPI → API Layer
+- Redis → Cache + Rate Limiting (volatile, high performance)
+- PostgreSQL → Dati core (API keys, utenti, configurazioni)
+- MongoDB → Logging, audit, analytics (non strutturato, append-only)
+
+---
+
+## Principio Architetturale Chiave
+
+- Redis → decide **SE bloccare**
+- Domain → decide **PERCHÉ**
+- MongoDB → registra **COSA è successo**
+- PostgreSQL → definisce **CHI e QUANTO può usare il sistema**
+
+==================================================
+FILE: docs/states.md
+==================================================
+# Proxy Server - Stati delle richieste
+
+Questo documento elenca i principali stati delle richieste gestite dal ProxyServer FastAPI, con codici, descrizione e note operative.
+
+## Tabella 1: Stati principali delle richieste
+
+| Codice Stato | Nome Stato       | Descrizione                                                                 | Azione successiva / Note                        |
+|--------------|-----------------|-----------------------------------------------------------------------------|------------------------------------------------|
+| 100          | PENDING         | Richiesta ricevuta dall'endpoint ma non ancora elaborata                    | Controllo cache → Cache HIT o Cache MISS      |
+| 110          | CACHE_HIT       | Risposta trovata in cache                                                   | Restituisce subito al client                  |
+| 120          | CACHE_MISS      | Nessuna risposta trovata in cache                                           | Forwarding al server esterno                  |
+| 200          | FORWARDING      | Richiesta inoltrata al server esterno                                       | Monitoraggio stato → Completed / Retrying / Failed |
+| 210          | RETRYING        | Tentativo di re-invio dopo fallimento con backoff                           | Retry limit controllato → Retry o Failed      |
+| 300          | COMPLETED       | Risposta ricevuta correttamente dal server esterno e cache aggiornata       | Return response al client                      |
+| 400          | FAILED          | Errore critico o timeout dopo max retries                                    | Log errore, return error al client            |
+
+---
+
+## Tabella 2: Stati della connessione / client IP
+
+| Codice Stato | Nome Stato     | Descrizione                                         | Note                                           |
+|--------------|---------------|---------------------------------------------------|-----------------------------------------------|
+| 500          | ACTIVE        | Connessione attiva con client/server             | Durante il forwarding o elaborazione richiesta |
+| 510          | RATE_LIMITED  | Superato limite richieste per IP                 | Ritorna 429 al client                          |
+| 520          | IDLE          | Connessione aperta ma inattiva                   | Attesa di nuova richiesta                      |
+| 530          | CLOSED        | Connessione terminata                            | Pulizia risorse                                |
+| 540          | ERROR         | Errore nella connessione                         | Log dell’errore                                |
+
+---
+
+## Tabella 3: Stati della connessione / client IP
+
+| Codice | Stato         | Descrizione                                         |
+|--------|---------------|---------------------------------------------------|
+| 500    | ACTIVE        | Connessione attiva con client/server             |
+| 510    | RATE_LIMITED  | Superato limite richieste per IP                 |
+| 520    | IDLE          | Connessione aperta ma inattiva                   |
+| 530    | CLOSED        | Connessione terminata                            |
+| 540    | ERROR         | Errore nella connessione                         |
+
+---
+
+
+
+==================================================
+FILE: docs/testing.md
+==================================================
+### Tutti i test
+```pytest```
+
+### Solo unit
+```pytest -m unit```
+
+### Solo integration
+```pytest -m integration```
+
+### Solo e2e
+```pytest -m e2e```
+
+### Coverage
+```pytest --cov=app --cov-report=term-missing```
+
+### Test specifico
+```pytest tests/unit/domain/test_cache_entry.py```
+
+### Verbose
+```pytest -v```
+
+==================================================
+FILE: tests/conftest.py
+==================================================
+# tests/conftest.py
+
+import pytest
+
+
+@pytest.fixture
+def app():
+    from app.main import create_app
+
+    return create_app(testing=True)
+
+
+@pytest.fixture
+def client(app):
+    from fastapi.testclient import TestClient
+
+    return TestClient(app)
+
+==================================================
+FILE: tests/e2e/test_proxy_api.py
+==================================================
+# tests/e2e/test_proxy_api.py
+
+import pytest
+from starlette.testclient import TestClient
+from app.main import create_app
+
+
+@pytest.fixture
+def client():
+    app = create_app(testing=True)
+    return TestClient(app)
+
+
+HEADERS = {
+    "x-forwarded-for": "127.0.0.1",
+}
+
+
+def test_proxy_success_flow(client):
+    response = client.post(
+        "/proxy/",
+        json={
+            "url": "https://httpbin.org/get",
+            "ttl": 10,
+        },
+        headers=HEADERS,
+    )
+
+    assert response.status_code == 200
+    assert "url" in response.json()
+
+
+def test_proxy_cache_behavior(client):
+    payload = {
+        "url": "https://httpbin.org/get",
+        "ttl": 10,
+    }
+
+    r1 = client.post("/proxy/", json=payload, headers=HEADERS)
+    r2 = client.post("/proxy/", json=payload, headers=HEADERS)
+
+    assert r1.status_code == 200
+    assert r2.status_code == 200
+
+    # fallback-safe cache assertion (non fragile)
+    assert r1.json() == r2.json()
+
+==================================================
+FILE: tests/integration/cache/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/integration/cache/test_redis_cache_flow.py
+==================================================
+# tests/integration/cache/test_redis_cache_flow.py
+
+import pytest
+
+from app.application.caching.models import CacheEntry
+from app.infrastructure.cache.cache_service import CacheService
+from app.infrastructure.cache.redis_client import RedisClient
+
+
+@pytest.mark.asyncio
+async def test_cache_roundtrip():
+    redis = RedisClient()
+    cache = CacheService(redis)
+
+    key = "integration:test:cache"
+
+    entry = CacheEntry(
+        key=key,
+        value={"a": 1},
+        ttl_seconds=60,
+        # aggiungi created_at se richiesto dal tuo modello
+    )
+
+    try:
+        await cache.set(entry)
+
+        result = await cache.get(key)
+
+        assert result is not None
+        assert result.key == key
+        assert result.value == {"a": 1}
+        assert result.ttl_seconds == 60
+
+    finally:
+        await cache.delete(key)
+        await redis.close()
+
+==================================================
+FILE: tests/integration/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/integration/proxy/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/integration/rate_limit/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/integration/rate_limit/test_rate_limit_flow.py
+==================================================
+# tests/integration/rate_limit/test_rate_limit_flow.py
+
+import pytest
+
+from app.infrastructure.rate_limiter.redis_rate_limiter import (
+    RedisRateLimiter,
+)
+from app.infrastructure.cache.redis_client import RedisClient
+
+
+@pytest.mark.asyncio
+async def test_rate_limiter_increments_counter():
+    redis = RedisClient()
+    limiter = RedisRateLimiter(redis_client=redis)
+
+    key = "integration:test:rate-limit"
+
+    try:
+        first = await limiter.increment(
+            key=key,
+            window_seconds=60,
+        )
+
+        second = await limiter.increment(
+            key=key,
+            window_seconds=60,
+        )
+
+        assert first == 1
+        assert second == 2
+
+    finally:
+        await redis.delete(key)
+        await redis.close()
+
+==================================================
+FILE: tests/integration/tasks/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/integration/tasks/test_celery_task_reader.py
+==================================================
+# tests/integration/tasks/test_celery_task_reader.py
+
+import pytest
+
+from app.application.tasks import TaskStatus
+from app.infrastructure.celery.celery_app import celery_app
+from app.infrastructure.tasks.celery_task_reader import (
+    CeleryTaskReader,
+)
+
+
+def test_reads_pending_task():
+    reader = CeleryTaskReader(celery_app)
+
+    result = reader.get("task-that-does-not-exist")
+
+    assert result.task_id == "task-that-does-not-exist"
+    assert result.status == TaskStatus.PENDING
+    assert result.ready is False
+
+==================================================
+FILE: tests/unit/application/caching/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/caching/test_get_or_set_cache.py
+==================================================
+# tests/unit/application/caching/test_get_or_set_cache.py
+
+from datetime import datetime, timezone
+
+import pytest
+
+from app.application.caching.models import CacheEntry
+from app.application.caching.use_cases.get_or_set_cache import (
+    GetOrSetCacheUseCase,
+)
+
+
+class FakeCache:
+    def __init__(self):
+        self.entries: dict[str, CacheEntry] = {}
+        self.get_calls = []
+        self.set_calls = []
+
+    async def get(self, key: str):
+        self.get_calls.append(key)
+        return self.entries.get(key)
+
+    async def set(self, entry: CacheEntry):
+        self.set_calls.append(entry)
+        self.entries[entry.key] = entry
+
+    async def delete(self, key: str):
+        self.entries.pop(key, None)
+
+
+@pytest.mark.asyncio
+async def test_returns_cached_value_without_calling_supplier():
+    cache = FakeCache()
+
+    cache.entries["key"] = CacheEntry(
+        key="key",
+        value={"cached": True},
+        ttl_seconds=60,
+        created_at=datetime.now(timezone.utc),
+    )
+
+    use_case = GetOrSetCacheUseCase(cache=cache)
+
+    supplier_called = False
+
+    async def supplier():
+        nonlocal supplier_called
+        supplier_called = True
+        return {"cached": False}
+
+    result = await use_case.execute(
+        key="key",
+        supplier=supplier,
+        ttl_seconds=60,
+    )
+
+    assert result.value == {"cached": True}
+    assert result.from_cache is True
+    assert supplier_called is False
+
+    assert cache.get_calls == ["key"]
+    assert cache.set_calls == []
+
+
+@pytest.mark.asyncio
+async def test_calls_supplier_on_cache_miss():
+    cache = FakeCache()
+
+    use_case = GetOrSetCacheUseCase(cache=cache)
+
+    async def supplier():
+        return {"value": 123}
+
+    result = await use_case.execute(
+        key="key",
+        supplier=supplier,
+        ttl_seconds=60,
+    )
+
+    assert result.value == {"value": 123}
+    assert result.from_cache is False
+
+    assert cache.get_calls == ["key"]
+    assert len(cache.set_calls) == 1
+
+    stored = cache.set_calls[0]
+
+    assert stored.key == "key"
+    assert stored.value == {"value": 123}
+    assert stored.ttl_seconds == 60
+
+
+@pytest.mark.asyncio
+async def test_supplier_is_called_only_once_on_single_execution():
+    cache = FakeCache()
+    use_case = GetOrSetCacheUseCase(cache=cache)
+
+    calls = 0
+
+    async def supplier():
+        nonlocal calls
+        calls += 1
+        return "value"
+
+    await use_case.execute(
+        key="key",
+        supplier=supplier,
+        ttl_seconds=60,
+    )
+
+    assert calls == 1
+
+
+@pytest.mark.asyncio
+async def test_propagates_supplier_exception():
+    cache = FakeCache()
+    use_case = GetOrSetCacheUseCase(cache=cache)
+
+    async def supplier():
+        raise RuntimeError("remote service failed")
+
+    with pytest.raises(RuntimeError, match="remote service failed"):
+        await use_case.execute(
+            key="key",
+            supplier=supplier,
+            ttl_seconds=60,
+        )
+
+    assert cache.set_calls == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("ttl", [0, -1])
+async def test_rejects_invalid_ttl(ttl):
+    cache = FakeCache()
+    use_case = GetOrSetCacheUseCase(cache=cache)
+
+    async def supplier():
+        return "value"
+
+    with pytest.raises(ValueError):
+        await use_case.execute(
+            key="key",
+            supplier=supplier,
+            ttl_seconds=ttl,
+        )
+
+==================================================
+FILE: tests/unit/application/caching/test_models.py
+==================================================
+# tests/unit/application/caching/test_models.py
+
+from datetime import datetime, timezone
+
+import pytest
+
+from app.application.caching.models import CacheEntry, CacheResult
+
+
+def test_cache_entry_is_created():
+    created_at = datetime.now(timezone.utc)
+
+    entry = CacheEntry(
+        key="test-key",
+        value={"foo": "bar"},
+        ttl_seconds=60,
+        created_at=created_at,
+    )
+
+    assert entry.key == "test-key"
+    assert entry.value == {"foo": "bar"}
+    assert entry.ttl_seconds == 60
+    assert entry.created_at == created_at
+
+
+def test_cache_entry_rejects_empty_key():
+    with pytest.raises(ValueError):
+        CacheEntry(
+            key="",
+            value="value",
+            ttl_seconds=60,
+            created_at=datetime.now(timezone.utc),
+        )
+
+
+def test_cache_entry_rejects_non_positive_ttl():
+    for ttl in (0, -1):
+        with pytest.raises(ValueError):
+            CacheEntry(
+                key="test",
+                value="value",
+                ttl_seconds=ttl,
+                created_at=datetime.now(timezone.utc),
+            )
+
+"""
+def test_cache_entry_requires_timezone_aware_datetime():
+    with pytest.raises(ValueError):
+        CacheEntry(
+            key="test",
+            value="value",
+            ttl_seconds=60,
+            created_at=datetime.now(),
+        )
+"""
+
+def test_cache_entry_is_immutable():
+    entry = CacheEntry(
+        key="test",
+        value="value",
+        ttl_seconds=60,
+        created_at=datetime.now(timezone.utc),
+    )
+
+    with pytest.raises(AttributeError):
+        entry.key = "other"
+
+
+def test_cache_result_from_cache():
+    result = CacheResult(
+        value={"foo": "bar"},
+        from_cache=True,
+    )
+
+    assert result.value == {"foo": "bar"}
+    assert result.from_cache is True
+
+
+def test_cache_result_not_from_cache():
+    result = CacheResult(
+        value={"foo": "bar"},
+        from_cache=False,
+    )
+
+    assert result.from_cache is False
+
+==================================================
+FILE: tests/unit/application/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/logging/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/logging/test_publish_event.py
+==================================================
+# tests/unit/application/logging/test_publish_event.py
+
+import pytest
+
+from app.application.logging.use_cases.publish_event import (
+    PublishEventUseCase,
+)
+
+
+class FakeEventPublisher:
+    def __init__(self):
+        self.events = []
+
+    async def publish(self, event):
+        self.events.append(event)
+
+
+@pytest.mark.asyncio
+async def test_publishes_event():
+    publisher = FakeEventPublisher()
+
+    use_case = PublishEventUseCase(
+        publisher=publisher,
+    )
+
+    event = {
+        "event_type": "test",
+        "value": 123,
+    }
+
+    await use_case.execute(event)
+
+    assert publisher.events == [event]
+
+
+@pytest.mark.asyncio
+async def test_propagates_publisher_exception():
+    class FailingPublisher:
+        async def publish(self, event):
+            raise RuntimeError("publisher failed")
+
+    use_case = PublishEventUseCase(
+        publisher=FailingPublisher(),
+    )
+
+    with pytest.raises(RuntimeError, match="publisher failed"):
+        await use_case.execute({"event": "test"})
+
+==================================================
+FILE: tests/unit/application/proxy/dtos/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/proxy/dtos/test_proxy_dtos.py
+==================================================
+# tests/unit/application/proxy/dtos/test_proxy_dtos.py
+
+import pytest
+
+from app.application.proxy.dtos.request_dto import ProxyRequestDTO
+from app.application.proxy.dtos.response_dto import ProxyResponseDTO
+
+
+def test_proxy_request_dto():
+    request = ProxyRequestDTO(
+        url="https://example.com",
+        ttl_seconds=60,
+    )
+
+    assert request.url == "https://example.com"
+    assert request.ttl_seconds == 60
+
+
+def test_proxy_request_dto_default_ttl():
+    request = ProxyRequestDTO(
+        url="https://example.com",
+    )
+
+    assert request.ttl_seconds == 60
+
+
+def test_proxy_request_rejects_empty_url():
+    with pytest.raises(ValueError):
+        ProxyRequestDTO(url="")
+
+
+@pytest.mark.parametrize("ttl", [0, -1])
+def test_proxy_request_rejects_invalid_ttl(ttl):
+    with pytest.raises(ValueError):
+        ProxyRequestDTO(
+            url="https://example.com",
+            ttl_seconds=ttl,
+        )
+
+
+def test_proxy_request_is_immutable():
+    request = ProxyRequestDTO(
+        url="https://example.com",
+    )
+
+    with pytest.raises(AttributeError):
+        request.url = "https://other.com"
+
+
+def test_proxy_response_dto():
+    response = ProxyResponseDTO(
+        url="https://example.com",
+        data={"ok": True},
+        from_cache=False,
+    )
+
+    assert response.url == "https://example.com"
+    assert response.data == {"ok": True}
+    assert response.from_cache is False
+
+==================================================
+FILE: tests/unit/application/proxy/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/proxy/use_cases/__init__.py
+==================================================
+# tests/unit/application/proxy/use_cases/test_forward_proxy_request.py
+
+import pytest
+
+from app.application.proxy.dtos.request_dto import ProxyRequestDTO
+from app.application.proxy.use_cases.forward_proxy_request import (
+    ForwardProxyRequestUseCase,
+)
+
+
+class FakeRemoteResource:
+    def __init__(self, value):
+        self.value = value
+        self.calls = []
+
+    async def fetch(self, url: str):
+        self.calls.append(url)
+        return self.value
+
+
+class FakeCacheUseCase:
+    def __init__(self, value, from_cache=False):
+        self.value = value
+        self.from_cache = from_cache
+        self.calls = []
+
+    async def execute(self, key, supplier, ttl_seconds):
+        self.calls.append(
+            {
+                "key": key,
+                "ttl_seconds": ttl_seconds,
+            }
+        )
+
+        class Result:
+            pass
+
+        result = Result()
+        result.value = self.value
+        result.from_cache = self.from_cache
+
+        return result
+
+
+@pytest.mark.asyncio
+async def test_forwards_request_and_returns_response():
+    remote = FakeRemoteResource(
+        {"data": "ok"},
+    )
+
+    cache = FakeCacheUseCase(
+        {"data": "ok"},
+        from_cache=False,
+    )
+
+    use_case = ForwardProxyRequestUseCase(
+        remote_resource=remote,
+        cache_use_case=cache,
+    )
+
+    request = ProxyRequestDTO(
+        url="https://example.com",
+        ttl_seconds=30,
+    )
+
+    result = await use_case.execute(request)
+
+    assert result.url == "https://example.com"
+    assert result.data == {"data": "ok"}
+    assert result.from_cache is False
+
+    assert cache.calls == [
+        {
+            "key": "https://example.com",
+            "ttl_seconds": 30,
+        }
+    ]
+
+
+@pytest.mark.asyncio
+async def test_returns_cached_response():
+    remote = FakeRemoteResource(
+        {"remote": True},
+    )
+
+    cache = FakeCacheUseCase(
+        {"cached": True},
+        from_cache=True,
+    )
+
+    use_case = ForwardProxyRequestUseCase(
+        remote_resource=remote,
+        cache_use_case=cache,
+    )
+
+    request = ProxyRequestDTO(
+        url="https://example.com",
+        ttl_seconds=60,
+    )
+
+    result = await use_case.execute(request)
+
+    assert result.data == {"cached": True}
+    assert result.from_cache is True
+
+
+@pytest.mark.asyncio
+async def test_passes_supplier_to_cache_use_case():
+    remote = FakeRemoteResource(
+        {"remote": True},
+    )
+
+    cache = FakeCacheUseCase(
+        {"cached": True},
+    )
+
+    use_case = ForwardProxyRequestUseCase(
+        remote_resource=remote,
+        cache_use_case=cache,
+    )
+
+    request = ProxyRequestDTO(
+        url="https://example.com",
+        ttl_seconds=60,
+    )
+
+    await use_case.execute(request)
+
+    # The use case must delegate loading to the cache abstraction.
+    assert cache.calls[0]["key"] == request.url
+
+==================================================
+FILE: tests/unit/application/proxy/use_cases/test_forward_proxy_request.py
+==================================================
+# tests/unit/application/proxy/use_cases/test_forward_proxy_request.py
+
+
+
+==================================================
+FILE: tests/unit/application/security/dtos/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/security/dtos/test_rate_limit_result.py
+==================================================
+# tests/unit/application/security/dtos/test_rate_limit_result.py
+
+from app.application.security.dtos.rate_limit_result import RateLimitResult
+
+
+def test_rate_limit_result():
+    result = RateLimitResult(
+        allowed=True,
+        limit=100,
+        remaining=99,
+        retry_after_seconds=0,
+        window_seconds=60,
+    )
+
+    assert result.allowed is True
+    assert result.limit == 100
+    assert result.remaining == 99
+    assert result.retry_after_seconds == 0
+    assert result.window_seconds == 60
+
+
+def test_rate_limit_result_is_immutable():
+    result = RateLimitResult(
+        allowed=True,
+        limit=100,
+        remaining=99,
+        retry_after_seconds=0,
+        window_seconds=60,
+    )
+
+    try:
+        result.allowed = False
+    except AttributeError:
+        pass
+    else:
+        raise AssertionError("RateLimitResult must be immutable")
+
+==================================================
+FILE: tests/unit/application/security/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/security/use_cases/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/security/use_cases/test_enforce_rate_limit.py
+==================================================
+# tests/unit/application/security/use_cases/test_enforce_rate_limit.py
+
+import pytest
+
+from app.application.security.use_cases.enforce_rate_limit import (
+    EnforceRateLimitUseCase,
+)
+from app.domain.policies.rate_limit_policy import RateLimitPolicy
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+class FakeRateLimiter:
+    def __init__(self, count: int):
+        self.count = count
+        self.calls = []
+
+    async def increment(self, key: str, window_seconds: int) -> int:
+        self.calls.append(
+            {
+                "key": key,
+                "window_seconds": window_seconds,
+            }
+        )
+        return self.count
+
+
+@pytest.fixture
+def policy():
+    return RateLimitPolicy(
+        RequestQuota(
+            limit=100,
+            window_seconds=60,
+        )
+    )
+
+
+@pytest.mark.asyncio
+async def test_allows_request(policy):
+    limiter = FakeRateLimiter(count=1)
+
+    use_case = EnforceRateLimitUseCase(
+        rate_limiter=limiter,
+        policy=policy,
+    )
+
+    result = await use_case.execute("client:127.0.0.1")
+
+    assert result.allowed is True
+    assert result.limit == 100
+    assert result.remaining == 99
+    assert result.retry_after_seconds == 0
+    assert result.window_seconds == 60
+
+    assert limiter.calls == [
+        {
+            "key": "client:127.0.0.1",
+            "window_seconds": 60,
+        }
+    ]
+
+
+@pytest.mark.asyncio
+async def test_rejects_request_when_limit_is_exceeded(policy):
+    limiter = FakeRateLimiter(count=101)
+
+    use_case = EnforceRateLimitUseCase(
+        rate_limiter=limiter,
+        policy=policy,
+    )
+
+    result = await use_case.execute("client:127.0.0.1")
+
+    assert result.allowed is False
+    assert result.limit == 100
+    assert result.remaining == 0
+    assert result.retry_after_seconds == 60
+    assert result.window_seconds == 60
+
+
+@pytest.mark.asyncio
+async def test_request_at_exact_limit_is_allowed(policy):
+    limiter = FakeRateLimiter(count=100)
+
+    use_case = EnforceRateLimitUseCase(
+        rate_limiter=limiter,
+        policy=policy,
+    )
+
+    result = await use_case.execute("client:127.0.0.1")
+
+    assert result.allowed is True
+    assert result.remaining == 0
+
+
+@pytest.mark.asyncio
+async def test_passes_correct_window_to_port(policy):
+    limiter = FakeRateLimiter(count=1)
+
+    use_case = EnforceRateLimitUseCase(
+        rate_limiter=limiter,
+        policy=policy,
+    )
+
+    await use_case.execute("client:127.0.0.1")
+
+    assert limiter.calls[0]["window_seconds"] == 60
+
+==================================================
+FILE: tests/unit/application/tasks/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/tasks/use_cases/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/application/tasks/use_cases/test_get_task_status.py
+==================================================
+# tests/unit/application/tasks/use_cases/test_get_task_status.py
+
+from app.application.tasks.use_cases.get_task_status import (
+    GetTaskStatusUseCase,
+)
+from app.application.tasks import TaskResult, TaskStatus
+
+
+class FakeTaskReader:
+    def __init__(self, result: TaskResult):
+        self.result = result
+        self.calls = []
+
+    def get(self, task_id: str) -> TaskResult:
+        self.calls.append(task_id)
+        return self.result
+
+
+def test_returns_pending_task():
+    reader = FakeTaskReader(
+        TaskResult(
+            task_id="task-1",
+            status=TaskStatus.PENDING,
+            result=None,
+            ready=False,
+        )
+    )
+
+    use_case = GetTaskStatusUseCase(
+        task_reader=reader,
+    )
+
+    result = use_case.execute("task-1")
+
+    assert result.task_id == "task-1"
+    assert result.status == "pending"
+    assert result.result is None
+
+    assert reader.calls == ["task-1"]
+
+
+def test_returns_started_task():
+    reader = FakeTaskReader(
+        TaskResult(
+            task_id="task-1",
+            status=TaskStatus.STARTED,
+            result=None,
+            ready=False,
+        )
+    )
+
+    use_case = GetTaskStatusUseCase(
+        task_reader=reader,
+    )
+
+    result = use_case.execute("task-1")
+
+    assert result.status == "started"
+    assert result.result is None
+
+
+def test_returns_success_result():
+    reader = FakeTaskReader(
+        TaskResult(
+            task_id="task-1",
+            status=TaskStatus.SUCCESS,
+            result={"value": 42},
+            ready=True,
+        )
+    )
+
+    use_case = GetTaskStatusUseCase(
+        task_reader=reader,
+    )
+
+    result = use_case.execute("task-1")
+
+    assert result.task_id == "task-1"
+    assert result.status == "success"
+    assert result.result == {"value": 42}
+
+
+def test_does_not_expose_result_when_task_is_not_ready():
+    reader = FakeTaskReader(
+        TaskResult(
+            task_id="task-1",
+            status=TaskStatus.FAILURE,
+            result={"secret": "should-not-be-returned"},
+            ready=False,
+        )
+    )
+
+    use_case = GetTaskStatusUseCase(
+        task_reader=reader,
+    )
+
+    result = use_case.execute("task-1")
+
+    assert result.status == "failure"
+    assert result.result is None
+
+
+def test_preserves_task_id():
+    reader = FakeTaskReader(
+        TaskResult(
+            task_id="abc-123",
+            status=TaskStatus.SUCCESS,
+            result="done",
+            ready=True,
+        )
+    )
+
+    use_case = GetTaskStatusUseCase(
+        task_reader=reader,
+    )
+
+    result = use_case.execute("abc-123")
+
+    assert result.task_id == "abc-123"
+
+==================================================
+FILE: tests/unit/domain/events/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/domain/events/test_rate_limit.py
+==================================================
+# tests/unit/domain/events/test_rate_limit.py
+
+from datetime import datetime, timezone
+
+import pytest
+
+from app.domain.events.rate_limit import RateLimitExceeded
+from app.domain.value_objects.client_ip import ClientIP
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+def test_creates_rate_limit_exceeded_event():
+    occurred_at = datetime.now(timezone.utc)
+    client_ip = ClientIP("192.168.1.10")
+    quota = RequestQuota(
+        limit=100,
+        window_seconds=60,
+    )
+
+    event = RateLimitExceeded(
+        client_ip=client_ip,
+        quota=quota,
+        occurred_at=occurred_at,
+    )
+
+    assert event.client_ip == client_ip
+    assert event.quota == quota
+    assert event.occurred_at == occurred_at
+
+
+def test_event_is_immutable():
+    event = RateLimitExceeded(
+        client_ip=ClientIP("127.0.0.1"),
+        quota=RequestQuota(
+            limit=10,
+            window_seconds=60,
+        ),
+        occurred_at=datetime.now(timezone.utc),
+    )
+
+    with pytest.raises(AttributeError):
+        event.client_ip = ClientIP("10.0.0.1")
+
+==================================================
+FILE: tests/unit/domain/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/domain/policies/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/domain/policies/test_rate_limit_policy.py
+==================================================
+# tests/unit/domain/policies/test_rate_limit_policy.py
+
+import pytest
+
+from app.domain.policies.rate_limit_policy import (
+    RateLimitDecision,
+    RateLimitPolicy,
+)
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+@pytest.fixture
+def policy() -> RateLimitPolicy:
+    return RateLimitPolicy(
+        RequestQuota(
+            limit=100,
+            window_seconds=60,
+        )
+    )
+
+
+def test_allows_request_when_count_is_zero(policy: RateLimitPolicy):
+    decision = policy.evaluate(0)
+
+    assert decision == RateLimitDecision(
+        allowed=True,
+        remaining=100,
+        retry_after_seconds=0,
+    )
+
+
+def test_allows_request_at_limit(policy: RateLimitPolicy):
+    decision = policy.evaluate(100)
+
+    assert decision.allowed is True
+    assert decision.remaining == 0
+    assert decision.retry_after_seconds == 0
+
+
+def test_rejects_request_above_limit(policy: RateLimitPolicy):
+    decision = policy.evaluate(101)
+
+    assert decision.allowed is False
+    assert decision.remaining == 0
+    assert decision.retry_after_seconds == 60
+
+
+def test_remaining_decreases_with_request_count(
+    policy: RateLimitPolicy,
+):
+    decision = policy.evaluate(25)
+
+    assert decision.allowed is True
+    assert decision.remaining == 75
+    assert decision.retry_after_seconds == 0
+
+
+def test_remaining_never_becomes_negative(
+    policy: RateLimitPolicy,
+):
+    decision = policy.evaluate(150)
+
+    assert decision.remaining == 0
+
+
+def test_negative_count_is_rejected(
+    policy: RateLimitPolicy,
+):
+    with pytest.raises(ValueError):
+        policy.evaluate(-1)
+
+
+def test_exposes_limit(policy: RateLimitPolicy):
+    assert policy.limit == 100
+
+
+def test_exposes_window_seconds(policy: RateLimitPolicy):
+    assert policy.window_seconds == 60
+
+==================================================
+FILE: tests/unit/domain/value_objects/__init__.py
+==================================================
+
+
+==================================================
+FILE: tests/unit/domain/value_objects/test_client_ip.py
+==================================================
+# tests/unit/domain/value_objects/test_client_ip.py
+
+import ipaddress
+
+import pytest
+
+from app.domain.exceptions import InvalidIPError
+from app.domain.value_objects.client_ip import ClientIP
+
+
+def test_creates_ipv4_address():
+    client_ip = ClientIP("192.168.1.10")
+
+    assert client_ip.value == "192.168.1.10"
+
+
+def test_creates_ipv6_address():
+    client_ip = ClientIP("2001:db8::1")
+
+    assert client_ip.value == "2001:db8::1"
+
+
+def test_normalizes_ipv4_address():
+    client_ip = ClientIP("127.0.0.1")
+
+    assert client_ip.value == str(ipaddress.ip_address("127.0.0.1"))
+
+
+def test_normalizes_ipv6_address():
+    client_ip = ClientIP("2001:0db8:0000:0000:0000:0000:0000:0001")
+
+    assert client_ip.value == "2001:db8::1"
+
+
+def test_rejects_invalid_ip():
+    with pytest.raises(InvalidIPError):
+        ClientIP("not-an-ip")
+
+
+def test_rejects_empty_ip():
+    with pytest.raises(InvalidIPError):
+        ClientIP("")
+
+
+def test_is_immutable():
+    client_ip = ClientIP("127.0.0.1")
+
+    with pytest.raises(AttributeError):
+        client_ip.value = "10.0.0.1"
+
+
+def test_string_representation():
+    client_ip = ClientIP("127.0.0.1")
+
+    assert str(client_ip) == "127.0.0.1"
+
+==================================================
+FILE: tests/unit/domain/value_objects/test_request_quota.py
+==================================================
+# tests/unit/domain/value_objects/test_request_quota.py
+
+import pytest
+
+from app.domain.exceptions import InvalidQuotaError
+from app.domain.value_objects.request_quota import RequestQuota
+
+
+def test_creates_valid_quota():
+    quota = RequestQuota(
+        limit=100,
+        window_seconds=60,
+    )
+
+    assert quota.limit == 100
+    assert quota.window_seconds == 60
+
+
+def test_rejects_zero_limit():
+    with pytest.raises(InvalidQuotaError):
+        RequestQuota(
+            limit=0,
+            window_seconds=60,
+        )
+
+
+def test_rejects_negative_limit():
+    with pytest.raises(InvalidQuotaError):
+        RequestQuota(
+            limit=-1,
+            window_seconds=60,
+        )
+
+
+def test_rejects_zero_window():
+    with pytest.raises(InvalidQuotaError):
+        RequestQuota(
+            limit=100,
+            window_seconds=0,
+        )
+
+
+def test_rejects_negative_window():
+    with pytest.raises(InvalidQuotaError):
+        RequestQuota(
+            limit=100,
+            window_seconds=-1,
+        )
+
+
+def test_is_immutable():
+    quota = RequestQuota(
+        limit=100,
+        window_seconds=60,
+    )
+
+    with pytest.raises(AttributeError):
+        quota.limit = 200
+
+==================================================
+FILE: tests/unit/__init__.py
+==================================================
+
+========== ROOT CONFIGURATION FILES ==========
+
+==================================================
+FILE: README.md
+==================================================
+# FastAPI Proxy Server
+
+## Overview
+
+The FastAPI Proxy Server is an asynchronous API gateway designed to forward, control, and optimize HTTP traffic between clients and upstream services. It is built with a strong focus on clean architecture, testability, and production readiness.
+
+The system provides core gateway capabilities such as request forwarding, caching, rate limiting, and structured logging, while maintaining a modular and extensible design suitable for enterprise backend environments.
+
+---
+
+## Architecture
+
+The project follows Clean Architecture principles with a strict separation of concerns:
+```Interfaces → Application → Domain → Infrastructure```
+
+### Layers
+
+- **Interfaces**
+  - FastAPI routes and middleware
+  - HTTP request/response handling
+
+- **Application**
+  - Use cases implementing business logic
+  - Orchestration of domain and infrastructure services
+
+- **Domain**
+  - Core entities, value objects, and business rules
+  - Framework-independent abstractions
+
+- **Infrastructure**
+  - External services implementations (Redis, HTTP clients, databases, logging)
+
+This structure ensures high maintainability, testability, and scalability.
+
+---
+
+## Core Features
+
+### Proxy Engine
+- Asynchronous HTTP request forwarding using httpx
+- Transparent request/response handling
+- Pluggable request pipeline
+
+### Caching Layer
+- Cache abstraction supporting in-memory and Redis backends
+- Cache key generation and TTL management
+- Designed for extension to distributed caching systems
+
+### Rate Limiting
+- IP-based request throttling
+- Configurable policies
+- Middleware-based enforcement
+
+### Logging and Observability
+- Structured logging system
+- MongoDB-compatible logging adapter
+- Extensible for centralized observability stacks (ELK, OpenTelemetry)
+
+### Resilience
+- Retry handling mechanisms for unstable upstream services
+- Safe request execution patterns
+- Fault-tolerant design principles
+
+---
+
+## Testing Strategy
+
+The project uses a multi-layer testing approach:
+
+- Unit tests for domain logic and use cases
+- Integration tests for infrastructure components
+- End-to-end tests for full proxy workflows
+
+Testing stack:
+- pytest
+- httpx test client
+- asyncio-based test execution
+
+Current status:
+- All tests passing
+- Coverage approximately 73%
+
+---
+
+## Tech Stack
+
+- FastAPI
+- Uvicorn
+- httpx
+- Pydantic v2
+- Motor (MongoDB async driver)
+- Redis (planned/optional backend)
+- Pytest
+
+---
+
+## Project Structure
+```
+app/
+├── application/ # Use cases (business logic)
+├── domain/ # Core business rules and entities
+├── infrastructure/ # External systems integrations
+├── interfaces/ # FastAPI routes and middleware
+├── bootstrap/ # Dependency injection container
+├── config/ # Configuration management
+├── utils/ # Shared utilities
+```
+
+
+---
+
+## Setup
+
+### Requirements
+- Python 3.14+
+- pip
+
+### Installation
+
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+### Running Tests
+```bash
+pytest
+```
+
+### Running the Application
+```bash
+uvicorn app.main:app --reload
+```
+# Design Goals
+
+This project is designed to demonstrate:
+
+- Backend system design using clean architecture principles
+- Asynchronous programming with FastAPI
+- Infrastructure abstraction for scalable systems
+- Production-oriented testing strategy
+- Modular design suitable for enterprise environments
+
+# Status
+
+Active development. The system is currently transitioning from a functional proxy prototype to a production-grade backend gateway service.
+
+
+---
+
+If you want, I can next help you upgrade this into a **GitHub “portfolio-grade README”** with:
+
+- badges (tests, coverage, python version)
+- architecture diagram (clean ASCII or Mermaid)
+- “engineering highlights” section tailored for recruiters
+- or a CV-ready project description aligned with backend job postings
+
+==================================================
+FILE: requirements.txt
+==================================================
+amqp==5.3.1
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+billiard==4.2.4
+celery==5.6.3
+certifi==2026.4.22
+click==8.3.3
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
+coverage==7.13.5
+dnspython==2.8.0
+fastapi==0.136.1
+greenlet==3.5.0
+grimp==3.14
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.13
+import-linter==2.11
+iniconfig==2.3.0
+kombu==5.6.2
+markdown-it-py==4.2.0
+mdurl==0.1.2
+motor==3.7.1
+packaging==26.2
+pluggy==1.6.0
+prompt_toolkit==3.0.52
+pydantic==2.13.3
+pydantic-settings==2.14.0
+pydantic_core==2.46.3
+Pygments==2.20.0
+pymongo==4.17.0
+pytest==9.0.3
+pytest-asyncio==1.3.0
+pytest-mock==3.15.1
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+redis==7.4.0
+rich==15.0.0
+six==1.17.0
+SQLAlchemy==2.0.49
+starlette==1.0.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2026.2
+tzlocal==5.3.1
+uvicorn==0.46.0
+vine==5.1.0
+wcwidth==0.7.0
+
+==================================================
+FILE: pytest.ini
+==================================================
+[pytest]
+testpaths = tests
+pythonpath = .
+addopts = --import-mode=importlib -ra
+markers =
+    unit: unit tests without external infrastructure
+    integration: tests requiring infrastructure adapters
+    e2e: end-to-end API tests
+==================================================
+FILE: LICENSE
+==================================================
+MIT License
+
+Copyright (c) 2026 __EnderShade__
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

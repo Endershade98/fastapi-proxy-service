@@ -2,52 +2,77 @@
 
 from functools import lru_cache
 
+from app.application.caching.use_cases.get_or_set_cache import (
+    GetOrSetCacheUseCase,
+)
+from app.application.proxy.use_cases.forward_proxy_request import (
+    ForwardProxyRequestUseCase,
+)
+from app.application.security.use_cases.enforce_rate_limit import (
+    EnforceRateLimitUseCase,
+)
+from app.application.tasks.use_cases.get_task_status import (
+    GetTaskStatusUseCase,
+)
+
 from app.config.settings import settings
 
-# Use Cases
-from app.application.caching.use_cases.get_or_set_cache import GetOrSetCacheUseCase
-from app.application.proxy.use_cases.forward_proxy_request import ForwardProxyRequestUseCase
-from app.application.security.use_cases.enforce_rate_limit import EnforceRateLimitUseCase
-from app.application.tasks.use_cases.get_task_status import GetTaskStatusUseCase
+from app.domain.policies.rate_limit_policy import (
+    RateLimitPolicy,
+)
+from app.domain.value_objects.request_quota import (
+    RequestQuota,
+)
 
-# Domain
-from app.domain.policies.rate_limit_policy import RateLimitPolicy
-from app.domain.value_objects.request_quota import RequestQuota
-
-# Infrastructure
-from app.infrastructure.cache.redis_client import RedisClient
-from app.infrastructure.clients.http_client import HttpClient
-from app.infrastructure.rate_limiter.redis_rate_limiter import RedisRateLimiter
-from app.infrastructure.celery.celery_app import celery_app
-from app.infrastructure.celery.event_publisher import CeleryEventPublisher
-from app.infrastructure.tasks.celery_task_reader import CeleryTaskReader
-from app.infrastructure.cache.cache_service import CacheService
+from app.infrastructure.cache.cache_service import (
+    CacheService,
+)
+from app.infrastructure.cache.redis_client import (
+    RedisClient,
+)
+from app.infrastructure.celery.celery_app import (
+    celery_app,
+)
+from app.infrastructure.celery.event_publisher import (
+    CeleryEventPublisher,
+)
+from app.infrastructure.clients.http_client import (
+    HttpClient,
+)
+from app.infrastructure.rate_limiter.redis_rate_limiter import (
+    RedisRateLimiter,
+)
+from app.infrastructure.tasks.celery_task_reader import (
+    CeleryTaskReader,
+)
 
 
 @lru_cache
-def get_redis_client():
+def get_redis_client() -> RedisClient:
     return RedisClient()
 
 
 @lru_cache
-def get_cache_service():
-    return CacheService(get_redis_client())
-
-
-@lru_cache
-def get_http_client():
-    return HttpClient()
-
-
-@lru_cache
-def get_rate_limiter_repository():
-    return RedisRateLimiter(
-        redis_client=RedisClient()
+def get_cache_service() -> CacheService:
+    return CacheService(
+        redis=get_redis_client(),
     )
 
 
 @lru_cache
-def get_rate_limit_policy():
+def get_http_client() -> HttpClient:
+    return HttpClient()
+
+
+@lru_cache
+def get_rate_limiter_repository() -> RedisRateLimiter:
+    return RedisRateLimiter(
+        redis_client=get_redis_client(),
+    )
+
+
+@lru_cache
+def get_rate_limit_policy() -> RateLimitPolicy:
     return RateLimitPolicy(
         RequestQuota(
             limit=settings.RATE_LIMIT_REQUESTS,
@@ -57,40 +82,38 @@ def get_rate_limit_policy():
 
 
 @lru_cache
-def get_task_reader():
-    return CeleryTaskReader(celery_app)
+def get_task_reader() -> CeleryTaskReader:
+    return CeleryTaskReader(
+        celery_app,
+    )
 
 
-# =========================
-# USE CASES
-# =========================
+@lru_cache
+def get_event_publisher() -> CeleryEventPublisher:
+    return CeleryEventPublisher()
 
-def get_cache_use_case():
+
+def get_cache_use_case() -> GetOrSetCacheUseCase:
     return GetOrSetCacheUseCase(
         cache=get_cache_service(),
     )
 
 
-def get_forward_proxy_use_case():
+def get_forward_proxy_use_case() -> ForwardProxyRequestUseCase:
     return ForwardProxyRequestUseCase(
         remote_resource=get_http_client(),
         cache_use_case=get_cache_use_case(),
     )
 
 
-def get_rate_limit_use_case():
+def get_rate_limit_use_case() -> EnforceRateLimitUseCase:
     return EnforceRateLimitUseCase(
         repository=get_rate_limiter_repository(),
         policy=get_rate_limit_policy(),
     )
 
 
-def get_task_status_use_case():
+def get_task_status_use_case() -> GetTaskStatusUseCase:
     return GetTaskStatusUseCase(
         task_reader=get_task_reader(),
     )
-
-
-@lru_cache
-def get_event_publisher():
-    return CeleryEventPublisher()
